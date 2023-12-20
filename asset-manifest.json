@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/frontend_arsip/static/css/main.29cb3615.css",
+    "main.js": "/frontend_arsip/static/js/main.56bbff08.js",
+    "static/js/787.70243ac3.chunk.js": "/frontend_arsip/static/js/787.70243ac3.chunk.js",
+    "index.html": "/frontend_arsip/index.html",
+    "main.29cb3615.css.map": "/frontend_arsip/static/css/main.29cb3615.css.map",
+    "main.56bbff08.js.map": "/frontend_arsip/static/js/main.56bbff08.js.map",
+    "787.70243ac3.chunk.js.map": "/frontend_arsip/static/js/787.70243ac3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.29cb3615.css",
+    "static/js/main.56bbff08.js"
+  ]
+}
