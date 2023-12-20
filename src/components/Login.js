@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import "../App.css"
+import Footer from './Footer';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -26,7 +25,7 @@ const Login = () => {
     }
   };
   return (
-    <div>
+    <div className='container' style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <div className="background-overlay">
         <img src="bg1.png" alt="" style={{ borderRadius: "15px", width: "90%", height: "80%", marginTop: "-20px", marginLeft: "140px" }} />
       </div>
@@ -75,8 +74,12 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="footer" style={{ fontSize: "12px", marginLeft: "-250px" }}>
-        @ 2023, Made with <FontAwesomeIcon icon={faHeart} style={{ color: "red" }} /> by <b><a href='https://sptik.unpas.ac.id/' style={{ textDecoration: "none", color: "#38B2AC" }}>Creative LP2TIK Junior</a></b> for a better web.
+      <div className='container' style={{ display: "flex", justifyContent: "center" }}>
+        <div className='row' style={{ marginTop: "50px", width: "70%" }}>
+          <div className='col-lg-12' style={{ position: "fixed", bottom: "0", marginBottom: "10px"}}>
+            <Footer />
+          </div>
+        </div>
       </div>
 
     </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import "../App.css"
 import Sidebar from './Sidebar';
 
-const Laporan = () => {
+const Pengaturan = () => {
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
       <Sidebar />
@@ -14,7 +14,7 @@ const Laporan = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b>Laporan</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b>Pengaturan</b></li>
                 </ol>
               </nav>
             </div>
@@ -31,4 +31,4 @@ const Laporan = () => {
   )
 }
 
-export default Laporan
+export default Pengaturan

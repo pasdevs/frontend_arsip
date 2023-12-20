@@ -58,12 +58,8 @@ li {
 }
 
 .footer {
-  color: gray;
-  padding: 10px;
-  text-align: center;
-  position: fixed;
+  position: relative;
   bottom: 0;
-  width: 100%;
 }
 
 
@@ -71,3 +67,10 @@ li {
   background-color: #CECECE; /* Ganti dengan warna yang diinginkan */
 }
 
+
+/* Media query untuk tampilan mobile */
+@media only screen and (max-width: 767px) {
+  .footer {
+    position: relative;
+  }
+}

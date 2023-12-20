@@ -5,6 +5,8 @@ import Login from './components/Login';
 import Arsip from './components/Arsip';
 import Laporan from './components/Laporan';
 import PengajuanNomorSuratBaru from './components/PengajuanNomorSuratBaru';
+import Pengajuan from './components/Pengajuan';
+import Pengaturan from './components/Pengaturan';
 
 const App = () => {
   return (
@@ -15,7 +17,9 @@ const App = () => {
         <Route path="/dashboard" exact element={<Dashboard />} />
         <Route path="/arsip" exact element={<Arsip />} />
         <Route path="/laporan" exact element={<Laporan />} />
+        <Route path="/pengajuan" exact element={<Pengajuan />} />
         <Route path="/pengajuanNomorSuratbaru" exact element={<PengajuanNomorSuratBaru />} />
+        <Route path="/pengaturan" exact element={<Pengaturan />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>
