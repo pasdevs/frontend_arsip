@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import Login from './components/Login';
+import Arsip from './components/Arsip';
+import Laporan from './components/Laporan';
+import PengajuanNomorSuratBaru from './components/PengajuanNomorSuratBaru';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" exact element={<Login />} />
+        <Route path="/login" exact element={<Login />} />
+        <Route path="/dashboard" exact element={<Dashboard />} />
+        <Route path="/arsip" exact element={<Arsip />} />
+        <Route path="/laporan" exact element={<Laporan />} />
+        <Route path="/pengajuanNomorSuratbaru" exact element={<PengajuanNomorSuratBaru />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
