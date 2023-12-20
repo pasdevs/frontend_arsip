@@ -35,31 +35,22 @@ const Sidebar = () => {
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <Link to="/dashboard"><FontAwesomeIcon className='cursor-change' icon={faHome} style={{ marginRight: "5px", color: "white" }} /></Link>
-        </div>
-        <div className='col-lg-10'>
-          <Link to="/dashboard"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}>Dashboard</button></Link>
+        <div className='col-lg-12'>
+          <Link to="/dashboard"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faHome} style={{ marginRight: "5px"}} />Dashboard</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <Link to="/arsip"><FontAwesomeIcon className='cursor-change' icon={faEnvelope} style={{ marginRight: "5px", color: "white" }} /></Link>
-        </div>
-        <div className='col-lg-10'>
-          <Link to="/arsip"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}>Arsip</button></Link>
+        <div className='col-lg-12'>
+          <Link to="/arsip"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "5px"}} />Arsip</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <FontAwesomeIcon className='cursor-change' icon={faUser} style={{ marginRight: "5px", color: "white" }} />
-        </div>
-        <div className='col-lg-10'>
+        <div className='col-lg-12'>
           <div class="btn-group" role="group" style={{ width: "100%" }}>
-            <button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}>Pengajuan</button>
-            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faUser} style={{ marginRight: "5px"}} />Pengajuan</button>
+            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{textAlign: "right"}}>
             </button>
             <ul class="dropdown-menu" style={{ textAlign: "left" }}>
               <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link class="dropdown-item" to="/pengajuanNomorSuratBaru" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengajuan Nomor Surat Baru</Link></li>
@@ -71,22 +62,16 @@ const Sidebar = () => {
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <Link to="/laporan"><FontAwesomeIcon className='cursor-change' icon={faFile} style={{ marginRight: "5px", color: "white" }} /></Link>
-        </div>
-        <div className='col-lg-10'>
-          <Link to="/laporan"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}>Laporan</button></Link>
+        <div className='col-lg-12'>
+          <Link to="/laporan"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faFile} style={{ marginRight: "5px"}} />Laporan</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <FontAwesomeIcon className='cursor-change' icon={faGear} style={{ marginRight: "5px", color: "white" }} />
-        </div>
-        <div className='col-lg-10'>
+        <div className='col-lg-12'>
           <div class="btn-group" role="group" style={{ width: "100%" }}>
-            <button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}>Pengaturan</button>
-            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faGear} style={{ marginRight: "5px" }} />Pengaturan</button>
+            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{textAlign: "right"}}>
             </button>
             <ul class="dropdown-menu" style={{ textAlign: "left" }}>
               <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Export</a></li>
@@ -105,11 +90,8 @@ const Sidebar = () => {
       <div className='flex-grow-1'></div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
-        <div className='col-lg-2' style={{display: "flex", alignItems: "center"}}>
-          <FontAwesomeIcon onClick={handleLogout} className='cursor-change' icon={faArrowRightFromBracket} style={{ marginRight: "5px", color: "white" }} />
-        </div>
-        <div className='col-lg-10'>
-          <button onClick={handleLogout} type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}>Logout</button>
+        <div className='col-lg-12'>
+          <button onClick={handleLogout} type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon onClick={handleLogout} icon={faArrowRightFromBracket} style={{ marginRight: "5px"}} />Logout</button>
         </div >
       </div>
 

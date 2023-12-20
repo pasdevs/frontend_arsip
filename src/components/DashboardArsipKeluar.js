@@ -96,142 +96,115 @@ const DashboardArsipKeluar = () => {
           </div>
 
           <div className='row' style={{ marginTop: "20px", marginBottom: "20px" }}>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>11</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: ST<br />Surat Tugas</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>11</span><span style={{ fontSize: "12px" }}>Kode: ST<br />Surat Tugas</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>28</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: SK<br />Surat Keputusan</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>28</span><span style={{ fontSize: "12px" }}>Kode: SK<br />Surat Keputusan</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>8</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: U<br />Undangan</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>8</span><span style={{ fontSize: "12px" }}>Kode: U<br />Undangan</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>19</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: Q<br />Permohonan</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>19</span><span style={{ fontSize: "12px" }}>Kode: Q<br />Permohonan</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>211</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: G.1<br />Kerjasama/MoU/MoA</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>211</span><span style={{ fontSize: "12px" }}>Kode: G.1<br />Kerjasama/MoU/MoA</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>77</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: I<br />Istimewa</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>77</span><span style={{ fontSize: "12px" }}>Kode: I<br />Istimewa</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>74</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: R<br />Perizinan/Peminjaman</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>74</span><span style={{ fontSize: "12px" }}>Kode: R<br />Perizinan/Peminjaman</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>11</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: C<br />Kepegawaian</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>11</span><span style={{ fontSize: "12px" }}>Kode: C<br />Kepegawaian</span>
             </div>
-            <div className='col-lg-3'>
-              <div className='row'>
-                <div className='col-lg-5' style={{ textAlign: "right", marginRight: "-10px" }}><h1 style={{ fontWeight: "bolder" }}>15</h1></div>
-                <div className='col-lg-7' style={{ display: "flex", alignItems: "center", fontSize: "12px" }}>Kode: B<br />Keuangan</div>
-              </div>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center" }}>
+              <span style={{ fontWeight: "bolder", fontSize: "35px", marginRight: "5px", width: "55px", textAlign: "right" }}>15</span><span style={{ fontSize: "12px" }}>Kode: B<br />Keuangan</span>
             </div>
-            <div className='col-lg-3' style={{ display: "flex", alignItems: "center", color: "#818081", marginLeft: "15px" }}>
-              <span><FontAwesomeIcon icon={faPlus} style={{ marginRight: "5px", fontSize: "20px" }} />Kode Surat..</span>
+            <div className='col-lg-3' style={{ display: "flex", alignItems: "center", color: "#818081"}}>
+              <span className='cursor-change'><FontAwesomeIcon icon={faPlus} style={{ fontSize: "20px", width: "55px", textAlign: "right" }} />Kode Surat..</span>
             </div>
           </div>
         </div>
 
         <div className='col' style={{ backgroundColor: "#F5F5F7", borderRadius: "5px", marginBottom: "10px", maxHeight: "300px", overflowY: "auto" }}>
           <div className='row' style={{ marginTop: "10px", marginBottom: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "#4FD1C5", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-32</b><br />diajukan oleh: Keuangan</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-32</b><br />diajukan oleh: Keuangan</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
           <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "red", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-33</b><br />diajukan oleh: IT</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-33</b><br />diajukan oleh: IT</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
           <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "blue", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-34</b><br />diajukan oleh: Akademik</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-34</b><br />diajukan oleh: Akademik</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
           <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "blue", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-35</b><br />diajukan oleh: Akademik</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-35</b><br />diajukan oleh: Akademik</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
           <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "blue", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-36</b><br />diajukan oleh: Akademik</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-36</b><br />diajukan oleh: Akademik</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
           <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
-            <div className='col-2' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-2' style={{ display: "flex", alignItems: "center" }}>
               <span style={{ marginLeft: "-5px", backgroundColor: "white", padding: "5px", borderRadius: "5px" }}>
                 <span style={{ backgroundColor: "blue", padding: "2px 5px", borderRadius: "5px" }}><FontAwesomeIcon icon={faWallet} style={{ color: "white" }} /></span>
               </span>
             </div>
-            <div className='col' style={{fontSize: "12px"}}>
-              <p style={{marginBottom: "0px"}}><b>B-37</b><br />diajukan oleh: Akademik</p>
+            <div className='col' style={{ fontSize: "12px" }}>
+              <p style={{ marginBottom: "0px" }}><b>B-37</b><br />diajukan oleh: Akademik</p>
             </div>
-            <div className='col-4' style={{display: "flex", alignItems: "center"}}>
+            <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
               <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
             </div>
           </div>
