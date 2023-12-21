@@ -26,6 +26,7 @@ const PengajuanNomorSuratBaru = () => {
 
   const handleChangeTanggalSurat = (event) => {
     setTanggalSurat(event.target.value);
+    console.log(event.target.value)
   };
 
   const handleChangeKodeDireksi = (event) => {

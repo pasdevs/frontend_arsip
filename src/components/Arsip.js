@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import "../App.css"
 import Sidebar from './Sidebar';
 import DataTable from 'react-data-table-component';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashCan, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
 const Arsip = () => {
 
@@ -9,10 +11,15 @@ const Arsip = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [userLogin, setUserLogin] = useState("");
 
   // Fetch data from the server when the component mounts
   useEffect(() => {
     fetchData();
+
+    const userRole = localStorage.getItem('userRole');
+    setUserLogin(userRole);
+
   }, []);
 
   const fetchData = async () => {
@@ -42,7 +49,7 @@ const Arsip = () => {
         return 'text-bg-info';
       case 'Batal':
         return 'text-bg-secondary';
-        case 'Progress':
+      case 'Progress':
         return 'text-bg-warning';
       case 'Approve':
         return 'text-bg-primary';
@@ -51,6 +58,16 @@ const Arsip = () => {
       default:
         return 'text-bg-secondary';
     }
+  };
+
+  const handleDetail = (row) => {
+    console.log('Detail for ID:', row.ID);
+    // Implementasi logika detail sesuai kebutuhan
+  };
+
+  const handleDelete = (row) => {
+    console.log('Delete for ID:', row.ID);
+    // Implementasi logika delete sesuai kebutuhan
   };
 
   const columns = [
@@ -65,9 +82,9 @@ const Arsip = () => {
       sortable: true
     },
     { name: 'Author', selector: 'YANG_MENANDATANGANI', sortable: true },
-    { 
-      name: 'Status', 
-      selector: 'STATUS', 
+    {
+      name: 'Status',
+      selector: 'STATUS',
       sortable: true,
       cell: (row) => (
         <span className={`badge ${getStatusBadgeVariant(row.STATUS)}`}>
@@ -77,6 +94,17 @@ const Arsip = () => {
     },
     { name: 'Tanggal Pengajuan', selector: 'TAHUN', sortable: true },
     { name: 'Tanggal Arsip', selector: 'TAHUN', sortable: true },
+    {
+      name: 'Action',
+      cell: (row) => (
+        <div>
+          <FontAwesomeIcon icon={faLayerGroup} onClick={() => handleDetail(row)} style={{ cursor: 'pointer', marginRight: '5px' }} data-toggle="tooltip" title="Detail" data-placement="top"/>
+          {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{cursor: 'pointer', color: "red"}} data-toggle="tooltip" title="Hapus" data-placement="top"/> : "" }
+        </div>
+      ),
+      allowOverflow: true,
+      button: true,
+    },
 
 
   ];

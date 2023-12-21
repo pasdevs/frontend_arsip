@@ -11,9 +11,11 @@ const Login = () => {
   const handleLogin = () => {
     // Kredensial hardcoded untuk admin dan user
     if (username === 'admin' && password === 'admin') {
+      localStorage.setItem('userRole', 'admin')
       navigate('/dashboard');
     } else if (username === 'user' && password === 'user') {
-      navigate('/user');
+      localStorage.setItem('userRole', 'user')
+      navigate('/dashboard');
     } else {
       alert('Username atau password salah');
     }

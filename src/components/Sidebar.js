@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   const handleLogout = () => {
+    localStorage.removeItem('userRole');
     window.location.href = '/login';
   };
 
