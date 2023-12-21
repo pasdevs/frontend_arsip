@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2'; // Impor SweetAlert
 import "../App.css"
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +9,7 @@ import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 const PengajuanNomorSuratBaru = () => {
   const [tanggalSurat, setTanggalSurat] = useState("");
   const [kodeDireksi, setKodeDireksi] = useState('');
+  const [kodeDireksiNama, setKodeDireksiNama] = useState('');
   const [perihal, setPerihal] = useState('');
   const [kodeSurat, setKodeSurat] = useState('');
   const [unitKerja, setUnitKerja] = useState('');
@@ -17,9 +20,16 @@ const PengajuanNomorSuratBaru = () => {
   const [keterangan, setKeterangan] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const [currentYear, setCurrentYear] = useState('');
+  const [currentMonth, setCurrentMonth] = useState('');
+  const [lastNumber, setLastNumber] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+
+  const [isFormValid, setIsFormValid] = useState(true);
+
   // Fungsi untuk menangani perubahan pada input file
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0].name;
     setSelectedFile(file);
     console.log("file:", file)
   };
@@ -32,6 +42,24 @@ const PengajuanNomorSuratBaru = () => {
   const handleChangeKodeDireksi = (event) => {
     setKodeDireksi(event.target.value);
     console.log(event.target.value)
+    if (event.target.value === "Unpas.R") {
+      setKodeDireksiNama("Rektor");
+    }
+    if (event.target.value === "Unpas.RI") {
+      setKodeDireksiNama("Wakil Rektor Bidang Belmawabud");
+    }
+    if (event.target.value === "Unpas.RII") {
+      setKodeDireksiNama("Wakil Rektor Bidang Keuangan");
+    }
+    if (event.target.value === "Unpas.RIII") {
+      setKodeDireksiNama("Wakil Rektor Bidang Inovasi");
+    }
+    if (event.target.value === "Unpas.RV") {
+      setKodeDireksiNama("Kepala Biro");
+    }
+    if (event.target.value === "Unpas.RVII") {
+      setKodeDireksiNama("Kepala Lembaga");
+    }
   };
 
   const handleChangePerihal = (event) => {
@@ -75,29 +103,149 @@ const PengajuanNomorSuratBaru = () => {
   };
 
 
-  // Fungsi untuk mengirim data, termasuk file, melalui endpoint
-  const handleAjukanClick = () => {
-    // Buat objek FormData untuk menyertakan file dalam pengiriman data
-    const formData = new FormData();
-    formData.append('tanggalSurat', tanggalSurat);
-    // ... tambahkan data lain ke formData ...
+  // Fungsi untuk mendapatkan nomor surat terakhir berdasarkan filter kode surat
+  const getLastNumber = useCallback(async () => {
+    if (kodeSurat) {
+      try {
+        const response = await axios.get(`http://localhost:3001/getLastNumber/${kodeSurat}`);
+        const { success, lastNumber } = response.data;
 
-    if (selectedFile) {
-      formData.append('file', selectedFile);
+        if (success) {
+          setLastNumber(parseInt(lastNumber, 10));
+          setNewNumber(parseInt(lastNumber, 10) + 1);
+        } else {
+          console.error('Gagal mendapatkan nomor surat terakhir.');
+        }
+      } catch (error) {
+        console.error('Terjadi kesalahan saat mengambil data dari server:', error);
+      }
+    }
+  }, [kodeSurat]);
+
+
+  const monthToRoman = (month) => {
+    const romanMonths = [
+      'I', 'II', 'III', 'IV', 'V', 'VI',
+      'VII', 'VIII', 'IX', 'X', 'XI', 'XII'
+    ];
+    return romanMonths[month - 1] || '';
+  };
+
+  const monthToText = (month) => {
+    const namaBulan = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return namaBulan[month - 1] || '';
+  };
+
+  // useEffect untuk memantau perubahan pada state
+  useEffect(() => {
+
+    getLastNumber();
+
+    // Validasi inputan
+    if (tanggalSurat && kodeDireksi && perihal && kodeSurat && unitKerja && yangMenandatangani && author && noWhatsappAuthor && emailAuthor && selectedFile) {
+      setIsFormValid(true);
+      return;
     }
 
-    // Kirim formData ke endpoint menggunakan fetch atau library HTTP request lainnya
-    // fetch('url-endpoint', {
-    //   method: 'POST',
-    //   body: formData,
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     // Handle respons dari server
-    //   })
-    //   .catch(error => {
-    //     // Handle error
-    //   });
+    // Mendapatkan waktu saat ini
+    const currentDate = new Date();
+    setCurrentYear(currentDate.getFullYear());
+    setCurrentMonth(monthToRoman(currentDate.getMonth() + 1)); // Perhatikan bahwa getMonth() mengembalikan indeks bulan (0-11)
+
+    // cek log data
+    console.log("NOMOR_SURAT:", newNumber)
+    console.log("YANG_MENANDATANGANI:", yangMenandatangani)
+    console.log("KODE_DIREKSI:", kodeDireksi)
+    console.log("KODE_DIREKSI_NAMA:", kodeDireksiNama)
+    console.log("KODE_SURAT:", kodeSurat)
+    console.log("BULAN:", monthToText(currentDate.getMonth() + 1));
+    console.log("BULAN_ROMAWI:", currentMonth)
+    console.log("TAHUN:", currentYear);
+    console.log("PERIHAL:", perihal)
+    console.log("UNIT_KERJA:", unitKerja)
+    console.log("STATUS: Reservasi")
+    console.log("NOMOR_SURAT_LENGKAP:", `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`)
+    console.log("URL_DRAFT_SURAT:", selectedFile)
+    console.log("TANGGAL_PENGAJUAN:", tanggalSurat)
+    console.log("YANG_MEMBUBUHKAN_TTD:", yangMenandatangani)
+    console.log("AUTHOR:", author)
+    console.log("NOMOR_WA_AUTHOR:", noWhatsappAuthor)
+    console.log("EMAIL_AUTHOR:", emailAuthor)
+    console.log("KETERANGAN:", keterangan)
+
+
+  }, [getLastNumber, newNumber, yangMenandatangani, kodeDireksi, kodeDireksiNama, kodeSurat, currentMonth, currentYear, perihal, unitKerja, selectedFile, tanggalSurat, author, noWhatsappAuthor, emailAuthor, keterangan]);
+
+
+
+  // Fungsi untuk mengirim data, termasuk file, melalui endpoint
+  const handleAjukanClick = async () => {
+    try {
+      // Validasi inputan
+      if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
+        setIsFormValid(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
+          confirmButtonColor: '#198754'
+        });
+        return;
+      }
+
+      // Jika form valid, lanjutkan penyimpanan
+      setIsFormValid(true);
+
+      const response = await axios.post('http://localhost:3001/addData', {
+        ID: `${currentYear}_${kodeSurat}_${newNumber}`,
+        NOMOR_SURAT: newNumber,
+        YANG_MENANDATANGANI: yangMenandatangani,
+        YANG_MENANDATANGANI_KODE: kodeDireksi,
+        KODE_SURAT: kodeSurat,
+        BULAN: monthToText(new Date().getMonth() + 1),
+        BULAN_ROMAWI: currentMonth,
+        TAHUN: currentYear,
+        PERIHAL: perihal,
+        UNIT_KERJA: unitKerja,
+        STATUS: "Reservasi",
+        NOMOR_SURAT_LENGKAP: `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
+        URL_DRAFT_SURAT: selectedFile,
+        TANGGAL_PENGAJUAN: tanggalSurat,
+        YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
+        AUTHOR: author,
+        NOMOR_WA_AUTHOR: noWhatsappAuthor,
+        EMAIL_AUTHOR: emailAuthor,
+        KETERANGAN: keterangan,
+      });
+
+      const { success, message } = response.data;
+
+      if (success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil mengajukan nomor surat!',
+          confirmButtonColor: '#198754'
+        });
+        console.log(message);
+        // Reset nilai state atau lakukan operasi lainnya setelah berhasil menyimpan nomor surat
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal mengajukan nomor surat!',
+          confirmButtonColor: '#198754'
+        });
+        console.error('Gagal mengajukan nomor surat!');
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Terjadi kesalahan saat mengajukan nomor surat!',
+        confirmButtonColor: '#198754'
+      });
+      console.error('Terjadi kesalahan saat mengajukan nomor surat!', error);
+    }
   };
 
 
@@ -361,7 +509,7 @@ const PengajuanNomorSuratBaru = () => {
                     style={{ marginTop: "10px", marginBottom: "10px" }}
                   />
                   {selectedFile && (
-                    <div className="input-group-append" style={{display: "flex"}}>
+                    <div className="input-group-append" style={{ display: "flex" }}>
                       <span className="input-group-text" style={{ border: "none" }}>
                         <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
                       </span>
@@ -376,7 +524,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <span style={{ marginRight: "10px" }}>Status Dokumen:</span><span class="badge text-bg-primary">Progress</span>
+                  <span style={{ marginRight: "10px" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
                 </div>
               </div>
 
@@ -385,9 +533,21 @@ const PengajuanNomorSuratBaru = () => {
               </div>
 
               <div className='col-lg-6'>
-                <div class="mb-3">
+                <div className="mb-3">
                   <label htmlFor="inputKeterangan" class="form-label">Keterangan:</label>
                   <textarea className="form-control" id="keterangan" rows="1" value={keterangan} onChange={handleChangeKeterangan}></textarea>
+                </div>
+              </div>
+
+              {/* alert jika belum terisi semua */}
+              <div className='col-lg-6'>
+                <p style={{display: "none"}}>Nomor terakhir untuk kode surat {kodeSurat} : {lastNumber}</p>
+              </div>
+              <div className='col-lg-6'>
+                <div className='mb-3'>
+                  {
+                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input sebelum mengajukan nomor surat!</p>
+                  }
                 </div>
               </div>
 

@@ -81,7 +81,7 @@ const Arsip = () => {
       ),
       sortable: true
     },
-    { name: 'Author', selector: 'YANG_MENANDATANGANI', sortable: true },
+    { name: 'Author', selector: 'AUTHOR', sortable: true },
     {
       name: 'Status',
       selector: 'STATUS',
@@ -92,8 +92,8 @@ const Arsip = () => {
         </span>
       ),
     },
-    { name: 'Tanggal Pengajuan', selector: 'TAHUN', sortable: true },
-    { name: 'Tanggal Arsip', selector: 'TAHUN', sortable: true },
+    { name: 'Tanggal Pengajuan', selector: 'TANGGAL_PENGAJUAN', sortable: true },
+    { name: 'Tanggal Arsip', selector: 'TANGGAL_PENGAJUAN', sortable: true },
     {
       name: 'Action',
       cell: (row) => (
