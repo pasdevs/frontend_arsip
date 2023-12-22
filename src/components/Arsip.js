@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 const Arsip = () => {
 
@@ -60,11 +61,6 @@ const Arsip = () => {
     }
   };
 
-  const handleDetail = (row) => {
-    console.log('Detail for ID:', row.ID);
-    // Implementasi logika detail sesuai kebutuhan
-  };
-
   const handleDelete = (row) => {
     console.log('Delete for ID:', row.ID);
     // Implementasi logika delete sesuai kebutuhan
@@ -92,14 +88,42 @@ const Arsip = () => {
         </span>
       ),
     },
-    { name: 'Tanggal Pengajuan', selector: 'TANGGAL_PENGAJUAN', sortable: true },
-    { name: 'Tanggal Arsip', selector: 'TANGGAL_PENGAJUAN', sortable: true },
+    {
+      name: 'Tanggal Pengajuan',
+      selector: 'TANGGAL_PENGAJUAN',
+      sortable: true,
+      cell: row => {
+        const isoDateString = row.TANGGAL_PENGAJUAN;
+        const dateObject = new Date(isoDateString);
+
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = dateObject.toLocaleDateString('id-ID', options);
+
+        return formattedDate;
+      },
+    },
+    {
+      name: 'Tanggal Arsip',
+      selector: 'TANGGAL_PENGAJUAN',
+      sortable: true,
+      cell: row => {
+        const isoDateString = row.TANGGAL_PENGAJUAN;
+        const dateObject = new Date(isoDateString);
+
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = dateObject.toLocaleDateString('id-ID', options);
+
+        return formattedDate;
+      },
+    },
     {
       name: 'Action',
       cell: (row) => (
         <div>
-          <FontAwesomeIcon icon={faLayerGroup} onClick={() => handleDetail(row)} style={{ cursor: 'pointer', marginRight: '5px' }} data-toggle="tooltip" title="Detail" data-placement="top"/>
-          {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{cursor: 'pointer', color: "red"}} data-toggle="tooltip" title="Hapus" data-placement="top"/> : "" }
+          <Link to={`/detailPengajuan/${row.ID}`}>
+            <FontAwesomeIcon icon={faLayerGroup} data-toggle="tooltip" title="Detail" data-placement="top" style={{marginRight: "10px"}}/>
+          </Link>
+          {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" /> : ""}
         </div>
       ),
       allowOverflow: true,

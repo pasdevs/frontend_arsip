@@ -7,19 +7,21 @@ import Laporan from './components/Laporan';
 import PengajuanNomorSuratBaru from './components/PengajuanNomorSuratBaru';
 import Pengajuan from './components/Pengajuan';
 import Pengaturan from './components/Pengaturan';
+import DetailPengajuan from './components/DetailPengajuan';
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" exact element={<Login />} />
-        <Route path="/login" exact element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" exact element={<Dashboard />} />
-        <Route path="/arsip" exact element={<Arsip />} />
-        <Route path="/laporan" exact element={<Laporan />} />
-        <Route path="/pengajuan" exact element={<Pengajuan />} />
-        <Route path="/pengajuanNomorSuratbaru" exact element={<PengajuanNomorSuratBaru />} />
-        <Route path="/pengaturan" exact element={<Pengaturan />} />
+        <Route path="/arsip" element={<Arsip />} />
+        <Route path="/laporan" element={<Laporan />} />
+        <Route path="/pengajuan" element={<Pengajuan />} />
+        <Route path="/pengajuanNomorSuratbaru" element={<PengajuanNomorSuratBaru />} />
+        <Route path="/detailPengajuan/:id" element={<DetailPengajuan />} />
+        <Route path="/pengaturan" element={<Pengaturan />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

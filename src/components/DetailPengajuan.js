@@ -5,9 +5,12 @@ import "../App.css"
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-const PengajuanNomorSuratBaru = () => {
+const DetailPengajuan = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [tanggalSurat, setTanggalSurat] = useState("");
   const [kodeDireksi, setKodeDireksi] = useState('');
   const [kodeDireksiNama, setKodeDireksiNama] = useState('');
@@ -20,19 +23,66 @@ const PengajuanNomorSuratBaru = () => {
   const [emailAuthor, setEmailAuthor] = useState('');
   const [keterangan, setKeterangan] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [status, setStatus] = useState(null);
 
   const [currentYear, setCurrentYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
   const [lastNumber, setLastNumber] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [nomorSuratLengkap, setNomorSuratLengkap] = useState('');
+  const [nomorSurat, setNomorSurat] = useState("");
+  const [serahkanDokumen, setSerahkanDokumen] = useState("")
 
   const [isFormValid, setIsFormValid] = useState(true);
 
+
+  // getData by id
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/getData/${id}`);
+        const { success, data } = response.data;
+
+        if (success) {
+          
+          // Mengonversi tanggal JavaScript ke dalam format "YYYY-MM-DD"
+          const tanggalDariServer = new Date(data.TANGGAL_PENGAJUAN);
+          const tahun = tanggalDariServer.getFullYear();
+          const bulan = (tanggalDariServer.getMonth() + 1).toString().padStart(2, '0');
+          const tanggal = tanggalDariServer.getDate().toString().padStart(2, '0');
+          const tanggalFormatted = `${tahun}-${bulan}-${tanggal}`;
+          console.log("tanggal formatted:", tanggalFormatted);
+          setTanggalSurat(tanggalFormatted);
+
+          setKodeDireksi(data.YANG_MENANDATANGANI_KODE);
+          setPerihal(data.PERIHAL);
+          setKodeSurat(data.KODE_SURAT);
+          setUnitKerja(data.UNIT_KERJA);
+          setYangMenandatangani(data.YANG_MEMBUBUHKAN_TTD);
+          setAuthor(data.AUTHOR);
+          setNoWhatsappAuthor(data.NOMOR_WA_AUTHOR);
+          setEmailAuthor(data.EMAIL_AUTHOR)
+          setKeterangan(data.KETERANGAN)
+          setSelectedFile(data.URL_DRAFT_SURAT);
+          setStatus(data.STATUS);
+          setNomorSuratLengkap(data.NOMOR_SURAT_LENGKAP);
+          setNomorSurat(data.NOMOR_SURAT);
+          setSerahkanDokumen(data.SERAHKAN_DOKUMEN);
+        } else {
+          console.error('Gagal mendapatkan data.');
+        }
+      } catch (error) {
+        console.error('Terjadi kesalahan saat mengambil data dari server:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+
   // Fungsi untuk menangani perubahan pada input file
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    // const file = event.target.files[0].name;
+    const file = event.target.files[0].name;
     setSelectedFile(file);
     console.log("file:", file)
   };
@@ -47,7 +97,7 @@ const PengajuanNomorSuratBaru = () => {
 
     // // Set state tanggalSurat dengan format yang diharapkan
     // setTanggalSurat(formattedDate);
-    // console.log("formatted date:",formattedDate);
+    // console.log(formattedDate);
   };
 
   const handleChangeKodeDireksi = (event) => {
@@ -111,6 +161,27 @@ const PengajuanNomorSuratBaru = () => {
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
     console.log(event.target.value)
+  };
+
+  const handleClickStatusApprove = () => {
+    setStatus("Approve");
+  };
+
+  const handleClickStatusDitolak = () => {
+    setStatus("Ditolak");
+    setSerahkanDokumen("Belum");
+  };
+
+  const handleCheckboxChange = () => {
+    // console.log("checkbox:", event.target.checked);
+    // if(event.target.checked === true){
+    //   setSerahkanDokumen("Sudah")
+    // }else {
+    //   serahkanDokumen("Progress")
+    // }
+
+    // Toggle nilai ketika checkbox berubah
+    setSerahkanDokumen((nilaiSebelumnya) => (nilaiSebelumnya === "Sudah" ? "Progress" : "Sudah"));
   };
 
 
@@ -190,80 +261,12 @@ const PengajuanNomorSuratBaru = () => {
     console.log("EMAIL_AUTHOR:", emailAuthor)
     console.log("KETERANGAN:", keterangan)
 
-
   }, [getLastNumber, newNumber, yangMenandatangani, kodeDireksi, kodeDireksiNama, kodeSurat, currentMonth, currentYear, perihal, unitKerja, selectedFile, tanggalSurat, author, noWhatsappAuthor, emailAuthor, keterangan, nomorSuratLengkap]);
 
 
 
   // Fungsi untuk mengirim data, termasuk file, melalui endpoint
-  // const handleAjukanClick = async () => {
-  //   try {
-  //     // Validasi inputan
-  //     if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
-  //       setIsFormValid(false);
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       return;
-  //     }
-
-  //     // Jika form valid, lanjutkan penyimpanan
-  //     setIsFormValid(true);
-
-  //     const response = await axios.post('http://localhost:3001/addData', {
-  //       ID: `${currentYear}_${kodeSurat}_${newNumber}`,
-  //       NOMOR_SURAT: newNumber,
-  //       YANG_MENANDATANGANI: yangMenandatangani,
-  //       YANG_MENANDATANGANI_KODE: kodeDireksi,
-  //       KODE_SURAT: kodeSurat,
-  //       BULAN: monthToText(new Date().getMonth() + 1),
-  //       BULAN_ROMAWI: currentMonth,
-  //       TAHUN: currentYear,
-  //       PERIHAL: perihal,
-  //       UNIT_KERJA: unitKerja,
-  //       STATUS: "Reservasi",
-  //       NOMOR_SURAT_LENGKAP: `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
-  //       URL_DRAFT_SURAT: selectedFile,
-  //       TANGGAL_PENGAJUAN: tanggalSurat,
-  //       YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
-  //       AUTHOR: author,
-  //       NOMOR_WA_AUTHOR: noWhatsappAuthor,
-  //       EMAIL_AUTHOR: emailAuthor,
-  //       KETERANGAN: keterangan,
-  //       SERAHKAN_DOKUMEN: "Belum"
-  //     });
-
-  //     const { success, message } = response.data;
-
-  //     if (success) {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Berhasil mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.log(message);
-  //       // Reset nilai state atau lakukan operasi lainnya setelah berhasil menyimpan nomor surat
-  //     } else {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Gagal mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.error('Gagal mengajukan nomor surat!');
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Terjadi kesalahan saat mengajukan nomor surat!',
-  //       confirmButtonColor: '#198754'
-  //     });
-  //     console.error('Terjadi kesalahan saat mengajukan nomor surat!', error);
-  //   }
-  // };
-
-  const handleAjukanClick = async () => {
+  const handleSubmitClick = async () => {
     try {
       // Validasi inputan
       if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
@@ -279,62 +282,38 @@ const PengajuanNomorSuratBaru = () => {
       // Jika form valid, lanjutkan penyimpanan
       setIsFormValid(true);
 
-      // Buat objek FormData
-      const formData = new FormData();
-
-      formData.append('ID', `${currentYear}_${kodeSurat}_${newNumber}`);
-      formData.append('NOMOR_SURAT', newNumber);
-      formData.append('YANG_MENANDATANGANI', yangMenandatangani);
-      formData.append('YANG_MENANDATANGANI_KODE', kodeDireksi);
-      formData.append('KODE_SURAT', kodeSurat);
-      formData.append('BULAN', monthToText(new Date().getMonth() + 1));
-      formData.append('BULAN_ROMAWI', currentMonth);
-      formData.append('TAHUN', currentYear);
-      formData.append('PERIHAL', perihal);
-      formData.append('UNIT_KERJA', unitKerja);
-      formData.append('STATUS', 'Reservasi');
-      formData.append('NOMOR_SURAT_LENGKAP', `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`);
-      formData.append('file', selectedFile);
-      formData.append('TANGGAL_PENGAJUAN', tanggalSurat);
-      formData.append('YANG_MEMBUBUHKAN_TTD', yangMenandatangani);
-      formData.append('AUTHOR', author);
-      formData.append('NOMOR_WA_AUTHOR', noWhatsappAuthor);
-      formData.append('EMAIL_AUTHOR', emailAuthor);
-      formData.append('KETERANGAN', keterangan);
-      formData.append('SERAHKAN_DOKUMEN', 'Belum');
-
-      // Kirim data ke backend
-      const response = await axios.post('http://localhost:3001/addData', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Penting untuk mengatur tipe konten menjadi form-data
-        },
+      const response = await axios.put(`http://localhost:3001/updateData/${id}`, {
+        NOMOR_SURAT: nomorSurat,
+        YANG_MENANDATANGANI: yangMenandatangani,
+        YANG_MENANDATANGANI_KODE: kodeDireksi,
+        KODE_SURAT: kodeSurat,
+        BULAN: monthToText(new Date().getMonth() + 1),
+        BULAN_ROMAWI: currentMonth,
+        TAHUN: currentYear,
+        PERIHAL: perihal,
+        UNIT_KERJA: unitKerja,
+        STATUS: status,
+        NOMOR_SURAT_LENGKAP: `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
+        URL_DRAFT_SURAT: selectedFile,
+        TANGGAL_PENGAJUAN: tanggalSurat,
+        YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
+        AUTHOR: author,
+        NOMOR_WA_AUTHOR: noWhatsappAuthor,
+        EMAIL_AUTHOR: emailAuthor,
+        KETERANGAN: keterangan,
+        SERAHKAN_DOKUMEN: serahkanDokumen,
       });
 
       const { success, message } = response.data;
 
       if (success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil mengajukan nomor surat!',
-          confirmButtonColor: '#198754'
-        });
-        console.log(message);
-        // Reset nilai state atau lakukan operasi lainnya setelah berhasil menyimpan nomor surat
+        alert(message);
+        navigate('/arsip');
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal mengajukan nomor surat!',
-          confirmButtonColor: '#198754'
-        });
-        console.error('Gagal mengajukan nomor surat!');
+        console.error('Gagal mengupdate data.');
       }
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Terjadi kesalahan saat mengajukan nomor surat!',
-        confirmButtonColor: '#198754'
-      });
-      console.error('Terjadi kesalahan saat mengajukan nomor surat!', error);
+      console.error('Terjadi kesalahan saat mengirim permintaan ke server:', error);
     }
   };
 
@@ -381,7 +360,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label">Penanggung Jawab</label>
+                  <label htmlFor="inputAuthor" className="form-label">Author</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -403,52 +382,6 @@ const PengajuanNomorSuratBaru = () => {
               </div>
 
               {/* baris kedua */}
-              <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="perihal"
-                      placeholder="Perihal Surat..."
-                      value={perihal}
-                      onChange={handleChangePerihal}
-                    />
-                    {perihal && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label">Kontak</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nomorWhatsappAuthor"
-                      placeholder="Nomor Whatsapp Aktif..."
-                      value={noWhatsappAuthor}
-                      onChange={handleChangeNoWhatsappAuthor}
-                    />
-                    {noWhatsappAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
                   <label htmlFor="inputKodeDireksi" className="form-label">Direksi Penanggung Jawab</label>
@@ -477,16 +410,61 @@ const PengajuanNomorSuratBaru = () => {
                   </div>
                 </div>
               </div>
-
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label">Email</label>
+                  <label htmlFor="inputNomorWhatsapp" className="form-label">Nomor Whatsapp Author</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="nomorWhatsappAuthor"
+                      placeholder="+62..."
+                      value={noWhatsappAuthor}
+                      onChange={handleChangeNoWhatsappAuthor}
+                    />
+                    {noWhatsappAuthor && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* baris ketiga */}
+              <div className='col-lg-6'>
+                <div class="mb-3">
+                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="perihal"
+                      placeholder="Perihal Surat..."
+                      value={perihal}
+                      onChange={handleChangePerihal}
+                    />
+                    {perihal && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className='col-lg-6'>
+                <div class="mb-3">
+                  <label htmlFor="inputEmailAuthor" className="form-label">Email Author</label>
                   <div className="input-group">
                     <input
                       type="email"
                       className="form-control"
                       id="emailAuthor"
-                      placeholder="Email Aktif..."
+                      placeholder="admin@unpas.ac.id"
                       value={emailAuthor}
                       onChange={handleChangeEmailAuthor}
                     />
@@ -535,6 +513,30 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
+                  <label htmlFor="inputPerihal" className="form-label">Yang Membubuhkan Tanda Tangan</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="namaYangMenandatangani"
+                      placeholder="Nama yang Menandatangani..."
+                      value={yangMenandatangani}
+                      onChange={handleChangeYangMenandatangani}
+                    />
+                    {yangMenandatangani && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* baris kelima */}
+              <div className='col-lg-6'>
+                <div class="mb-3">
                   <label htmlFor="inputKodeDireksi" className="form-label">Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
@@ -561,30 +563,6 @@ const PengajuanNomorSuratBaru = () => {
                 </div>
               </div>
 
-              {/* baris kelima */}
-              <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Tanda Tangan</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="namaYangMenandatangani"
-                      placeholder="Nama Lengkap Yang Menandatangani..."
-                      value={yangMenandatangani}
-                      onChange={handleChangeYangMenandatangani}
-                    />
-                    {yangMenandatangani && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
               <div className='col-lg-6'>
                 <p style={{ marginBottom: "0px" }}>Silahkan Upload Draft Surat:</p>
                 <p style={{ marginBottom: "0px", fontSize: "9px" }}>1. Mohon diperiksa dan dipastikan seluruh ejaan dan informasi dalam surat</p>
@@ -595,7 +573,6 @@ const PengajuanNomorSuratBaru = () => {
                   <input
                     type="file"
                     className="form-control form-control-sm"
-                    accept='.pdf'
                     id="formFile"
                     onChange={handleFileChange}
                     style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -615,9 +592,43 @@ const PengajuanNomorSuratBaru = () => {
               <div className='col-lg-6'>
               </div>
               <div className='col-lg-6'>
-                <div class="mb-3">
+                {/* <div class="mb-3">
                   <span style={{ marginRight: "10px" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
+                </div> */}
+                <div class="mb-3">
+                  <span style={{ marginRight: "10px" }}>Status Dokumen:</span>
+                  <span class="badge text-bg-primary cursor-change"
+                    onClick={handleClickStatusApprove} style={{ border: status === 'Approve' ? '3px solid blue' : 'none' }}>Approve</span>
+                  <span style={{ marginLeft: "10px", marginRight: "10px" }}>Atau</span>
+                  <span class="badge text-bg-danger cursor-change"
+                    onClick={handleClickStatusDitolak} style={{ border: status === 'Ditolak' ? '3px solid red' : 'none' }}>Ditolak</span>
                 </div>
+                {/* <div class="mb-3">
+                  <label htmlFor="inputKodeDireksi" className="form-label">Status Dokumen</label>
+                  <div className="input-group d-flex align-items-center">
+                    <select
+                      className="form-select"
+                      aria-label="Default select example"
+                      value={status}
+                      onChange={handleChangeStatus}
+                    >
+                      <option value="">Status Dokumen</option>
+                      <option value="Reservasi">Reservasi</option>
+                      <option value="Arsip">Arsip</option>
+                      <option value="Batal">Batal</option>
+                      <option value="Progress">Progress</option>
+                      <option value="Approve">Approve</option>
+                      <option value="Ditolak">Ditolak</option>
+                    </select>
+                    {kodeDireksi && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div> */}
               </div>
 
               {/* baris ketujuh */}
@@ -625,10 +636,44 @@ const PengajuanNomorSuratBaru = () => {
               </div>
 
               <div className='col-lg-6'>
-                <div className="mb-3">
+                {
+                  status === "Approve" ?
+                    <div class="mb-3">
+                      <label htmlFor="inputAuthor2" className="form-label">Author</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="author2"
+                          placeholder="Nama Penanggung Jawab..."
+                          value={`${author}/${unitKerja}`}
+                        />
+                      </div>
+                    </div>
+                    :
+                    <div className="mb-3">
+                      <label htmlFor="inputKeterangan" class="form-label">Keterangan:</label>
+                      <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan}></textarea>
+                    </div>
+                }
+
+                {
+                  (serahkanDokumen === "Progress" && status === "Approve") || (serahkanDokumen === "Sudah" && status === "Approve") ?
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="serahkanDokumen" onChange={handleCheckboxChange} checked={serahkanDokumen === "Sudah"} />
+                      <label class="form-check-label" htmlFor="serahkanDokumen">
+                        Dokumen Sudah diserahkan kepada ADMIN
+                      </label>
+                    </div>
+                    :
+                    ""
+                }
+
+
+                {/* <div className="mb-3">
                   <label htmlFor="inputKeterangan" class="form-label">Keterangan:</label>
-                  <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
-                </div>
+                  <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan}></textarea>
+                </div> */}
               </div>
 
               {/* baris nomor surat */}
@@ -643,7 +688,8 @@ const PengajuanNomorSuratBaru = () => {
                       type="text"
                       className="form-control"
                       id="nomorSuratLengkap"
-                      value={nomorSuratLengkap}
+                      // value={nomorSuratLengkap}
+                      value={nomorSurat && kodeDireksi && kodeSurat ? `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}` : nomorSuratLengkap}
                       disabled
                       readOnly
                       style={{ fontWeight: "bolder", fontSize: "22px" }}
@@ -667,8 +713,8 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris kedelapan */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div class="mb-3">
-                  <button type="button" class="btn btn-success" onClick={handleAjukanClick} style={{ marginRight: "20px" }}>Ajukan</button>
-                  <Link to="/dashboard"><button type="button" class="btn btn-secondary">Batal</button></Link>
+                  <button type="button" class="btn btn-success" onClick={handleSubmitClick} style={{ marginRight: "20px" }}>Submit</button>
+                  <Link to="/arsip"><button type="button" class="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
 
@@ -682,4 +728,4 @@ const PengajuanNomorSuratBaru = () => {
   )
 }
 
-export default PengajuanNomorSuratBaru
+export default DetailPengajuan

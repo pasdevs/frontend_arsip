@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faEnvelope, faUser, faFile, faGear, faArrowRightFromBracket, faChevronDown, faCircleInfo, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import "../App.css"
 import { Link } from 'react-router-dom';
+import myAvatar from '../image/avatar.png'
 
 const Sidebar = () => {
   const handleLogout = () => {
@@ -17,7 +18,7 @@ const Sidebar = () => {
         <div className='col-lg-12' style={{ backgroundColor: "#94A5A4", width: "90%", height: "100px", marginLeft: "12px", borderRadius: "15px" }}>
           <div className='row' style={{ marginTop: "10px" }}>
             <div className='col-lg-12' style={{ textAlign: "center" }}>
-              <img src='avatar.png' alt='' style={{ width: "50px", height: "50px" }} />
+              <img src={myAvatar} alt='' style={{ width: "50px", height: "50px" }} />
               <FontAwesomeIcon className='cursor-change' data-bs-toggle="dropdown" aria-expanded="false" icon={faChevronDown} style={{}} />
               <ul class="dropdown-menu" style={{ textAlign: "left" }}>
                 <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}><FontAwesomeIcon className='cursor-change' icon={faUserCircle} style={{ marginRight: "5px" }} />Profile</a></li>
