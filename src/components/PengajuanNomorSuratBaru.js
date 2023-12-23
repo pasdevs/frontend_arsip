@@ -32,9 +32,12 @@ const PengajuanNomorSuratBaru = () => {
   // Fungsi untuk menangani perubahan pada input file
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    // const file = event.target.files[0].name;
-    setSelectedFile(file);
-    console.log("file:", file)
+    // Dapatkan nama asli berkas
+    const originalFileName = file.name;
+    // Simpan objek File dan nama asli berkas ke dalam state
+    setSelectedFile({ file, originalFileName });
+    console.log("file:", file);
+    console.log("originalFileName:", originalFileName);
   };
 
   const handleChangeTanggalSurat = (event) => {
@@ -294,7 +297,7 @@ const PengajuanNomorSuratBaru = () => {
       formData.append('UNIT_KERJA', unitKerja);
       formData.append('STATUS', 'Reservasi');
       formData.append('NOMOR_SURAT_LENGKAP', `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`);
-      formData.append('file', selectedFile);
+      formData.append('file', selectedFile.file, selectedFile.originalFileName);
       formData.append('TANGGAL_PENGAJUAN', tanggalSurat);
       formData.append('YANG_MEMBUBUHKAN_TTD', yangMenandatangani);
       formData.append('AUTHOR', author);

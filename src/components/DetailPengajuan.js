@@ -6,10 +6,21 @@ import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
+
 
 const DetailPengajuan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  //react pdf viewer
+
+  const { DefaultLayout } = defaultLayoutPlugin();
+
 
   const [tanggalSurat, setTanggalSurat] = useState("");
   const [kodeDireksi, setKodeDireksi] = useState('');
@@ -32,6 +43,8 @@ const DetailPengajuan = () => {
   const [nomorSuratLengkap, setNomorSuratLengkap] = useState('');
   const [nomorSurat, setNomorSurat] = useState("");
   const [serahkanDokumen, setSerahkanDokumen] = useState("")
+  const [pdfUrl, setPdfUrl] = useState("")
+
 
   const [isFormValid, setIsFormValid] = useState(true);
 
@@ -44,7 +57,7 @@ const DetailPengajuan = () => {
         const { success, data } = response.data;
 
         if (success) {
-          
+
           // Mengonversi tanggal JavaScript ke dalam format "YYYY-MM-DD"
           const tanggalDariServer = new Date(data.TANGGAL_PENGAJUAN);
           const tahun = tanggalDariServer.getFullYear();
@@ -68,6 +81,7 @@ const DetailPengajuan = () => {
           setNomorSuratLengkap(data.NOMOR_SURAT_LENGKAP);
           setNomorSurat(data.NOMOR_SURAT);
           setSerahkanDokumen(data.SERAHKAN_DOKUMEN);
+          setPdfUrl(data.PDF_URL)
         } else {
           console.error('Gagal mendapatkan data.');
         }
@@ -77,14 +91,18 @@ const DetailPengajuan = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, pdfUrl]);
 
 
   // Fungsi untuk menangani perubahan pada input file
   const handleFileChange = (event) => {
-    const file = event.target.files[0].name;
-    setSelectedFile(file);
-    console.log("file:", file)
+    const file = event.target.files[0];
+    // Dapatkan nama asli berkas
+    const originalFileName = file.name;
+    // Simpan objek File dan nama asli berkas ke dalam state
+    setSelectedFile({ file, originalFileName });
+    console.log("file:", file);
+    console.log("originalFileName:", originalFileName);
   };
 
   const handleChangeTanggalSurat = (event) => {
@@ -265,7 +283,60 @@ const DetailPengajuan = () => {
 
 
 
-  // Fungsi untuk mengirim data, termasuk file, melalui endpoint
+  // // Fungsi untuk mengupdate data, termasuk file, melalui endpoint
+  // const handleSubmitClick = async () => {
+  //   try {
+  //     // Validasi inputan
+  //     if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
+  //       setIsFormValid(false);
+  //       Swal.fire({
+  //         icon: 'error',
+  //         title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
+  //         confirmButtonColor: '#198754'
+  //       });
+  //       return;
+  //     }
+
+  //     // Jika form valid, lanjutkan penyimpanan
+  //     setIsFormValid(true);
+
+  //     const response = await axios.put(`http://localhost:3001/updateData/${id}`, {
+  //       NOMOR_SURAT: nomorSurat,
+  //       YANG_MENANDATANGANI: yangMenandatangani,
+  //       YANG_MENANDATANGANI_KODE: kodeDireksi,
+  //       KODE_SURAT: kodeSurat,
+  //       BULAN: monthToText(new Date().getMonth() + 1),
+  //       BULAN_ROMAWI: currentMonth,
+  //       TAHUN: currentYear,
+  //       PERIHAL: perihal,
+  //       UNIT_KERJA: unitKerja,
+  //       STATUS: status,
+  //       NOMOR_SURAT_LENGKAP: `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
+  //       URL_DRAFT_SURAT: selectedFile,
+  //       TANGGAL_PENGAJUAN: tanggalSurat,
+  //       YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
+  //       AUTHOR: author,
+  //       NOMOR_WA_AUTHOR: noWhatsappAuthor,
+  //       EMAIL_AUTHOR: emailAuthor,
+  //       KETERANGAN: keterangan,
+  //       SERAHKAN_DOKUMEN: serahkanDokumen,
+  //     });
+
+  //     const { success, message } = response.data;
+
+  //     if (success) {
+  //       alert(message);
+  //       navigate('/arsip');
+  //     } else {
+  //       console.error('Gagal mengupdate data.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Terjadi kesalahan saat mengirim permintaan ke server:', error);
+  //   }
+  // };
+
+
+  //form data
   const handleSubmitClick = async () => {
     try {
       // Validasi inputan
@@ -282,26 +353,33 @@ const DetailPengajuan = () => {
       // Jika form valid, lanjutkan penyimpanan
       setIsFormValid(true);
 
-      const response = await axios.put(`http://localhost:3001/updateData/${id}`, {
-        NOMOR_SURAT: nomorSurat,
-        YANG_MENANDATANGANI: yangMenandatangani,
-        YANG_MENANDATANGANI_KODE: kodeDireksi,
-        KODE_SURAT: kodeSurat,
-        BULAN: monthToText(new Date().getMonth() + 1),
-        BULAN_ROMAWI: currentMonth,
-        TAHUN: currentYear,
-        PERIHAL: perihal,
-        UNIT_KERJA: unitKerja,
-        STATUS: status,
-        NOMOR_SURAT_LENGKAP: `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
-        URL_DRAFT_SURAT: selectedFile,
-        TANGGAL_PENGAJUAN: tanggalSurat,
-        YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
-        AUTHOR: author,
-        NOMOR_WA_AUTHOR: noWhatsappAuthor,
-        EMAIL_AUTHOR: emailAuthor,
-        KETERANGAN: keterangan,
-        SERAHKAN_DOKUMEN: serahkanDokumen,
+      // Buat objek FormData
+      const formData = new FormData();
+      formData.append('NOMOR_SURAT', nomorSurat);
+      formData.append('YANG_MENANDATANGANI', yangMenandatangani);
+      formData.append('YANG_MENANDATANGANI_KODE', kodeDireksi);
+      formData.append('KODE_SURAT', kodeSurat);
+      formData.append('BULAN', monthToText(new Date().getMonth() + 1));
+      formData.append('BULAN_ROMAWI', currentMonth);
+      formData.append('TAHUN', currentYear);
+      formData.append('PERIHAL', perihal);
+      formData.append('UNIT_KERJA', unitKerja);
+      formData.append('STATUS', status);
+      formData.append('NOMOR_SURAT_LENGKAP', `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`);
+      formData.append('file', selectedFile.file, selectedFile.originalFileName);
+      formData.append('TANGGAL_PENGAJUAN', tanggalSurat);
+      formData.append('YANG_MEMBUBUHKAN_TTD', yangMenandatangani);
+      formData.append('AUTHOR', author);
+      formData.append('NOMOR_WA_AUTHOR', noWhatsappAuthor);
+      formData.append('EMAIL_AUTHOR', emailAuthor);
+      formData.append('KETERANGAN', keterangan);
+      formData.append('SERAHKAN_DOKUMEN', serahkanDokumen);
+
+      // Kirim data ke backend
+      const response = await axios.put(`http://localhost:3001/updateData/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       const { success, message } = response.data;
@@ -717,6 +795,20 @@ const DetailPengajuan = () => {
                   <Link to="/arsip"><button type="button" class="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
+
+              {/* preview pdf */}
+              <div className='col-lg-12'>
+                <div class="mb-3" style={{ width: '100%', height: '500px' }}>
+                  <div style={{ width: '100%', height: '500px' }}>
+                    <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
+                      <Viewer fileUrl={pdfUrl}>
+                        <DefaultLayout />
+                      </Viewer>
+                    </Worker>
+                  </div>
+                </div>
+              </div>
+
 
             </div>
 
