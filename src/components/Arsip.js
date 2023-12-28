@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+// import axios from 'axios';
+import Swal from 'sweetalert2'; // Impor SweetAlert
 import "../App.css"
 import Sidebar from './Sidebar';
 import DataTable from 'react-data-table-component';
@@ -61,9 +63,49 @@ const Arsip = () => {
     }
   };
 
+
+  const deleteData = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/deleteData/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        console.log('Data berhasil dihapus');
+        // Setelah menghapus data, Anda dapat memanggil fetchData() untuk memperbarui tampilan tabel
+        fetchData();
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil menghapus data!',
+          confirmButtonColor: '#198754'
+        });
+      } else {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
+
   const handleDelete = (row) => {
-    console.log('Delete for ID:', row.ID);
-    // Implementasi logika delete sesuai kebutuhan
+    Swal.fire({
+      title: 'Apakah anda yakin ingin menghapus data ini ?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Ya, hapus!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Jika pengguna mengklik "Ya", lakukan penghapusan
+        deleteData(row.ID);
+      }
+    });
   };
 
   const columns = [
@@ -121,7 +163,7 @@ const Arsip = () => {
       cell: (row) => (
         <div>
           <Link to={`/detailPengajuan/${row.ID}`}>
-            <FontAwesomeIcon icon={faLayerGroup} data-toggle="tooltip" title="Detail" data-placement="top" style={{marginRight: "10px"}}/>
+            <FontAwesomeIcon icon={faLayerGroup} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px" }} />
           </Link>
           {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" /> : ""}
         </div>
@@ -193,12 +235,16 @@ const Arsip = () => {
                         highlightOnHover
                         subHeader
                         subHeaderComponent={
-                          <input type='text' className='form-control'
-                            placeholder='Search...'
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                          />
+                          <>
+                            <input type='text' className='form-control w-25'
+                              placeholder='Search...'
+                              value={searchTerm}
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {/* <button type="button" class="btn btn-danger"><FontAwesomeIcon icon={faTrashCan} />Hapus Data</button> */}
+                          </>
                         }
+                        subHeaderAlign='left'
                       />
                     </div>
                   </div>

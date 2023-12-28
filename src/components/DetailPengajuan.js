@@ -4,23 +4,22 @@ import Swal from 'sweetalert2'; // Impor SweetAlert
 import "../App.css"
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faForwardStep, faBackwardStep, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
-
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const DetailPengajuan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  //react pdf viewer
-
-  const { DefaultLayout } = defaultLayoutPlugin();
-
+  //pdf viewer
+  const [numPages, setNumPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [scale, setScale] = useState(1);
 
   const [tanggalSurat, setTanggalSurat] = useState("");
   const [kodeDireksi, setKodeDireksi] = useState('');
@@ -45,8 +44,29 @@ const DetailPengajuan = () => {
   const [serahkanDokumen, setSerahkanDokumen] = useState("")
   const [pdfUrl, setPdfUrl] = useState("")
 
-
   const [isFormValid, setIsFormValid] = useState(true);
+
+  //handle navigasi pdf viewer
+  const onDocumentLoadSuccess = ({ numPages }) => {
+    setNumPages(numPages);
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, numPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const handleZoomIn = () => {
+    setScale((prevScale) => Math.min(prevScale + 0.1, 2)); // Atur batasan zoom sesuai kebutuhan
+  };
+
+  const handleZoomOut = () => {
+    setScale((prevScale) => Math.max(prevScale - 0.1, 0.5)); // Atur batasan zoom sesuai kebutuhan
+  };
+
 
 
   // getData by id
@@ -108,14 +128,6 @@ const DetailPengajuan = () => {
   const handleChangeTanggalSurat = (event) => {
     setTanggalSurat(event.target.value);
     console.log(event.target.value)
-
-    // //Ambil tanggal dari event.target.value dan konversi ke format yang diharapkan ("yyyy-MM-dd")
-    // const selectedDate = new Date(event.target.value);
-    // const formattedDate = selectedDate.toISOString().split('T')[0];
-
-    // // Set state tanggalSurat dengan format yang diharapkan
-    // setTanggalSurat(formattedDate);
-    // console.log(formattedDate);
   };
 
   const handleChangeKodeDireksi = (event) => {
@@ -282,60 +294,6 @@ const DetailPengajuan = () => {
   }, [getLastNumber, newNumber, yangMenandatangani, kodeDireksi, kodeDireksiNama, kodeSurat, currentMonth, currentYear, perihal, unitKerja, selectedFile, tanggalSurat, author, noWhatsappAuthor, emailAuthor, keterangan, nomorSuratLengkap]);
 
 
-
-  // // Fungsi untuk mengupdate data, termasuk file, melalui endpoint
-  // const handleSubmitClick = async () => {
-  //   try {
-  //     // Validasi inputan
-  //     if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
-  //       setIsFormValid(false);
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       return;
-  //     }
-
-  //     // Jika form valid, lanjutkan penyimpanan
-  //     setIsFormValid(true);
-
-  //     const response = await axios.put(`http://localhost:3001/updateData/${id}`, {
-  //       NOMOR_SURAT: nomorSurat,
-  //       YANG_MENANDATANGANI: yangMenandatangani,
-  //       YANG_MENANDATANGANI_KODE: kodeDireksi,
-  //       KODE_SURAT: kodeSurat,
-  //       BULAN: monthToText(new Date().getMonth() + 1),
-  //       BULAN_ROMAWI: currentMonth,
-  //       TAHUN: currentYear,
-  //       PERIHAL: perihal,
-  //       UNIT_KERJA: unitKerja,
-  //       STATUS: status,
-  //       NOMOR_SURAT_LENGKAP: `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
-  //       URL_DRAFT_SURAT: selectedFile,
-  //       TANGGAL_PENGAJUAN: tanggalSurat,
-  //       YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
-  //       AUTHOR: author,
-  //       NOMOR_WA_AUTHOR: noWhatsappAuthor,
-  //       EMAIL_AUTHOR: emailAuthor,
-  //       KETERANGAN: keterangan,
-  //       SERAHKAN_DOKUMEN: serahkanDokumen,
-  //     });
-
-  //     const { success, message } = response.data;
-
-  //     if (success) {
-  //       alert(message);
-  //       navigate('/arsip');
-  //     } else {
-  //       console.error('Gagal mengupdate data.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Terjadi kesalahan saat mengirim permintaan ke server:', error);
-  //   }
-  // };
-
-
   //form data
   const handleSubmitClick = async () => {
     try {
@@ -400,8 +358,35 @@ const DetailPengajuan = () => {
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
       <Sidebar />
 
+      <div className='col-lg-3 col-md-10 d-flex flex-column' style={{ marginTop: "10px", overflowX: "auto" }}>
+        <div className='container'>
+          <div className='row'>
+            <p style={{ marginTop: "10px", fontWeight: "bolder" }}>Draft surat:</p>
+            <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px", marginTop: "10px", overflowX: "auto", overflowY: "auto", maxHeight: "500px" }}>
+              {/* preview pdf */}
+              <p style={{ textAlign: "center", marginTop: "0px" }}>
+                <FontAwesomeIcon icon={faSearchMinus} onClick={handleZoomOut} style={{ cursor: "pointer", marginRight: "10px" }} />
+                <span>{(scale * 100).toFixed()}%</span>
+                <FontAwesomeIcon icon={faSearchPlus} onClick={handleZoomIn} style={{ cursor: "pointer", marginLeft: "10px" }} />
+              </p>
+              <Document
+                file={pdfUrl}
+                onLoadSuccess={onDocumentLoadSuccess}
+              >
+                <Page pageNumber={currentPage} width={280 * scale} height={400 * scale} />
+              </Document>
+              <p style={{ textAlign: "center", marginTop: "20px" }}>
+                <FontAwesomeIcon icon={faBackwardStep} onClick={handlePrevPage} style={{ cursor: "pointer", marginRight: "10px" }} />
+                Page {currentPage} of {numPages}
+                <FontAwesomeIcon icon={faForwardStep} onClick={handleNextPage} style={{ cursor: "pointer", marginLeft: "10px" }} />
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
+      <div className='col-lg-7 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
         <div className='container'>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
@@ -422,7 +407,7 @@ const DetailPengajuan = () => {
                       type="date"
                       className="form-control"
                       id="tanggalSurat"
-                      placeholder="Tanggal Surat"
+                      placeholder="Tanggal surat"
                       value={tanggalSurat}
                       onChange={handleChangeTanggalSurat}
                     />
@@ -438,13 +423,13 @@ const DetailPengajuan = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label">Author</label>
+                  <label htmlFor="inputAuthor" className="form-label">Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
                       className="form-control"
                       id="author"
-                      placeholder="Nama Penanggung Jawab..."
+                      placeholder="Nama penanggung jawab..."
                       value={author}
                       onChange={handleChangeAuthor}
                     />
@@ -460,6 +445,53 @@ const DetailPengajuan = () => {
               </div>
 
               {/* baris kedua */}
+              <div className='col-lg-6'>
+                <div class="mb-3">
+                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="perihal"
+                      placeholder="Perihal surat..."
+                      value={perihal}
+                      onChange={handleChangePerihal}
+                    />
+                    {perihal && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className='col-lg-6'>
+                <div class="mb-3">
+                  <label htmlFor="inputNomorWhatsapp" className="form-label">Kontak</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="nomorWhatsappAuthor"
+                      placeholder="Nomor whatsapp aktif..."
+                      value={noWhatsappAuthor}
+                      onChange={handleChangeNoWhatsappAuthor}
+                    />
+                    {noWhatsappAuthor && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
                   <label htmlFor="inputKodeDireksi" className="form-label">Direksi Penanggung Jawab</label>
@@ -488,61 +520,16 @@ const DetailPengajuan = () => {
                   </div>
                 </div>
               </div>
-              <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label">Nomor Whatsapp Author</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nomorWhatsappAuthor"
-                      placeholder="+62..."
-                      value={noWhatsappAuthor}
-                      onChange={handleChangeNoWhatsappAuthor}
-                    />
-                    {noWhatsappAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
 
-              {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="perihal"
-                      placeholder="Perihal Surat..."
-                      value={perihal}
-                      onChange={handleChangePerihal}
-                    />
-                    {perihal && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label">Email Author</label>
+                  <label htmlFor="inputEmailAuthor" className="form-label">Email</label>
                   <div className="input-group">
                     <input
                       type="email"
                       className="form-control"
                       id="emailAuthor"
-                      placeholder="admin@unpas.ac.id"
+                      placeholder="Email aktif..."
                       value={emailAuthor}
                       onChange={handleChangeEmailAuthor}
                     />
@@ -591,30 +578,6 @@ const DetailPengajuan = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Yang Membubuhkan Tanda Tangan</label>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="namaYangMenandatangani"
-                      placeholder="Nama yang Menandatangani..."
-                      value={yangMenandatangani}
-                      onChange={handleChangeYangMenandatangani}
-                    />
-                    {yangMenandatangani && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* baris kelima */}
-              <div className='col-lg-6'>
-                <div class="mb-3">
                   <label htmlFor="inputKodeDireksi" className="form-label">Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
@@ -640,6 +603,31 @@ const DetailPengajuan = () => {
                   </div>
                 </div>
               </div>
+
+              {/* baris kelima */}
+              <div className='col-lg-6'>
+                <div class="mb-3">
+                  <label htmlFor="inputPerihal" className="form-label">Tanda Tangan</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="namaYangMenandatangani"
+                      placeholder="Nama yang menandatangani..."
+                      value={yangMenandatangani}
+                      onChange={handleChangeYangMenandatangani}
+                    />
+                    {yangMenandatangani && (
+                      <div className="input-group-append">
+                        <span className="input-group-text" style={{ border: "none" }}>
+                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
 
               <div className='col-lg-6'>
                 <p style={{ marginBottom: "0px" }}>Silahkan Upload Draft Surat:</p>
@@ -796,18 +784,7 @@ const DetailPengajuan = () => {
                 </div>
               </div>
 
-              {/* preview pdf */}
-              <div className='col-lg-12'>
-                <div class="mb-3" style={{ width: '100%', height: '500px' }}>
-                  <div style={{ width: '100%', height: '500px' }}>
-                    <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
-                      <Viewer fileUrl={pdfUrl}>
-                        <DefaultLayout />
-                      </Viewer>
-                    </Worker>
-                  </div>
-                </div>
-              </div>
+
 
 
             </div>
