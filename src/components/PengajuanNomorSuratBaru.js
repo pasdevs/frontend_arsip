@@ -3,8 +3,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2'; // Impor SweetAlert
 import "../App.css"
 import Sidebar from './Sidebar';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 const PengajuanNomorSuratBaru = () => {
@@ -43,14 +43,6 @@ const PengajuanNomorSuratBaru = () => {
   const handleChangeTanggalSurat = (event) => {
     setTanggalSurat(event.target.value);
     console.log(event.target.value)
-
-    // //Ambil tanggal dari event.target.value dan konversi ke format yang diharapkan ("yyyy-MM-dd")
-    // const selectedDate = new Date(event.target.value);
-    // const formattedDate = selectedDate.toISOString().split('T')[0];
-
-    // // Set state tanggalSurat dengan format yang diharapkan
-    // setTanggalSurat(formattedDate);
-    // console.log("formatted date:",formattedDate);
   };
 
   const handleChangeKodeDireksi = (event) => {
@@ -197,75 +189,6 @@ const PengajuanNomorSuratBaru = () => {
   }, [getLastNumber, newNumber, yangMenandatangani, kodeDireksi, kodeDireksiNama, kodeSurat, currentMonth, currentYear, perihal, unitKerja, selectedFile, tanggalSurat, author, noWhatsappAuthor, emailAuthor, keterangan, nomorSuratLengkap]);
 
 
-
-  // Fungsi untuk mengirim data, termasuk file, melalui endpoint
-  // const handleAjukanClick = async () => {
-  //   try {
-  //     // Validasi inputan
-  //     if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
-  //       setIsFormValid(false);
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       return;
-  //     }
-
-  //     // Jika form valid, lanjutkan penyimpanan
-  //     setIsFormValid(true);
-
-  //     const response = await axios.post('http://localhost:3001/addData', {
-  //       ID: `${currentYear}_${kodeSurat}_${newNumber}`,
-  //       NOMOR_SURAT: newNumber,
-  //       YANG_MENANDATANGANI: yangMenandatangani,
-  //       YANG_MENANDATANGANI_KODE: kodeDireksi,
-  //       KODE_SURAT: kodeSurat,
-  //       BULAN: monthToText(new Date().getMonth() + 1),
-  //       BULAN_ROMAWI: currentMonth,
-  //       TAHUN: currentYear,
-  //       PERIHAL: perihal,
-  //       UNIT_KERJA: unitKerja,
-  //       STATUS: "Reservasi",
-  //       NOMOR_SURAT_LENGKAP: `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`,
-  //       URL_DRAFT_SURAT: selectedFile,
-  //       TANGGAL_PENGAJUAN: tanggalSurat,
-  //       YANG_MEMBUBUHKAN_TTD: yangMenandatangani,
-  //       AUTHOR: author,
-  //       NOMOR_WA_AUTHOR: noWhatsappAuthor,
-  //       EMAIL_AUTHOR: emailAuthor,
-  //       KETERANGAN: keterangan,
-  //       SERAHKAN_DOKUMEN: "Belum"
-  //     });
-
-  //     const { success, message } = response.data;
-
-  //     if (success) {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Berhasil mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.log(message);
-  //       // Reset nilai state atau lakukan operasi lainnya setelah berhasil menyimpan nomor surat
-  //     } else {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Gagal mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.error('Gagal mengajukan nomor surat!');
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Terjadi kesalahan saat mengajukan nomor surat!',
-  //       confirmButtonColor: '#198754'
-  //     });
-  //     console.error('Terjadi kesalahan saat mengajukan nomor surat!', error);
-  //   }
-  // };
-
   const handleAjukanClick = async () => {
     try {
       // Validasi inputan
@@ -353,7 +276,7 @@ const PengajuanNomorSuratBaru = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b>Pengajuan Nomor Surat Baru</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
                 </ol>
               </nav>
             </div>
@@ -362,45 +285,31 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris pertama */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputTanggalSurat" className="form-label">Tanggal Surat</label>
+                  <label htmlFor="inputTanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
                   <div className="input-group">
                     <input
                       type="date"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="tanggalSurat"
                       placeholder="Tanggal Surat"
                       value={tanggalSurat}
                       onChange={handleChangeTanggalSurat}
                     />
-                    {tanggalSurat && (
-                      <div className="input-group-append" style={{ display: "flex" }}>
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label">Penanggung Jawab</label>
+                  <label htmlFor="inputAuthor" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="author"
                       placeholder="Nama Penanggung Jawab..."
                       value={author}
                       onChange={handleChangeAuthor}
                     />
-                    {author && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -408,45 +317,31 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris kedua */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="perihal"
                       placeholder="Perihal Surat..."
                       value={perihal}
                       onChange={handleChangePerihal}
                     />
-                    {perihal && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label">Kontak</label>
+                  <label htmlFor="inputNomorWhatsapp" className="form-label" style={{fontSize: "small"}}>Kontak</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="nomorWhatsappAuthor"
                       placeholder="Nomor Whatsapp Aktif..."
                       value={noWhatsappAuthor}
                       onChange={handleChangeNoWhatsappAuthor}
                     />
-                    {noWhatsappAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -454,10 +349,10 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Direksi Penanggung Jawab</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeDireksi}
                       onChange={handleChangeKodeDireksi}
@@ -470,36 +365,22 @@ const PengajuanNomorSuratBaru = () => {
                       <option value="Unpas.R5">Kepala Biro</option>
                       <option value="Unpas.R7">Kepala Lembaga</option>
                     </select>
-                    {kodeDireksi && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
 
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label">Email</label>
+                  <label htmlFor="inputEmailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
                   <div className="input-group">
                     <input
                       type="email"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="emailAuthor"
                       placeholder="Email Aktif..."
                       value={emailAuthor}
                       onChange={handleChangeEmailAuthor}
                     />
-                    {emailAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -507,10 +388,10 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris keempat */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Kode Surat</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeSurat}
                       onChange={handleChangeKodeSurat}
@@ -526,22 +407,15 @@ const PengajuanNomorSuratBaru = () => {
                       <option value="C">C - Kepegawaian</option>
                       <option value="B">B - Keuangan</option>
                     </select>
-                    {kodeSurat && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Unit Kerja</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={unitKerja}
                       onChange={handleChangeUnitKerja}
@@ -553,13 +427,6 @@ const PengajuanNomorSuratBaru = () => {
                       <option value="IT">IT</option>
                       <option value="Rumah Tangga">Rumah Tangga</option>
                     </select>
-                    {unitKerja && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -567,23 +434,16 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris kelima */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Tanda Tangan</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="namaYangMenandatangani"
                       placeholder="Nama Lengkap Yang Menandatangani..."
                       value={yangMenandatangani}
                       onChange={handleChangeYangMenandatangani}
                     />
-                    {yangMenandatangani && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -603,13 +463,6 @@ const PengajuanNomorSuratBaru = () => {
                     onChange={handleFileChange}
                     style={{ marginTop: "10px", marginBottom: "10px" }}
                   />
-                  {selectedFile && (
-                    <div className="input-group-append" style={{ display: "flex" }}>
-                      <span className="input-group-text" style={{ border: "none" }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                      </span>
-                    </div>
-                  )}
                 </div>
 
               </div>
@@ -619,7 +472,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <span style={{ marginRight: "10px" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
+                  <span style={{ marginRight: "10px", fontSize: "small" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
                 </div>
               </div>
 
@@ -629,7 +482,7 @@ const PengajuanNomorSuratBaru = () => {
 
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="inputKeterangan" class="form-label">Keterangan:</label>
+                  <label htmlFor="inputKeterangan" class="form-label" style={{fontSize: "small"}}>Keterangan:</label>
                   <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
                 </div>
               </div>

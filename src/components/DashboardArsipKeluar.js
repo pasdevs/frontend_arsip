@@ -69,7 +69,7 @@ const DashboardArsipKeluar = () => {
         <div className='col-lg-12'>
           <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
             <ol class="breadcrumb">
-              <li class="breadcrumb-item active" aria-current="page"><b>Dashboard</b></li>
+              <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Dashboard</b></li>
             </ol>
           </nav>
         </div>

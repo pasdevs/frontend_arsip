@@ -197,7 +197,7 @@ const Arsip = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b>Arsip</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Arsip</b></li>
                 </ol>
               </nav>
             </div>

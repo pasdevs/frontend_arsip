@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'; // Impor SweetAlert
 import "../App.css"
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faForwardStep, faBackwardStep, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
+import { faForwardStep, faBackwardStep, faSearchMinus, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -66,6 +66,11 @@ const DetailPengajuan = () => {
   const handleZoomOut = () => {
     setScale((prevScale) => Math.max(prevScale - 0.1, 0.5)); // Atur batasan zoom sesuai kebutuhan
   };
+
+  const handleResetZoom = () => {
+    setScale(1)
+  };
+
 
 
 
@@ -368,6 +373,7 @@ const DetailPengajuan = () => {
                 <FontAwesomeIcon icon={faSearchMinus} onClick={handleZoomOut} style={{ cursor: "pointer", marginRight: "10px" }} />
                 <span>{(scale * 100).toFixed()}%</span>
                 <FontAwesomeIcon icon={faSearchPlus} onClick={handleZoomIn} style={{ cursor: "pointer", marginLeft: "10px" }} />
+                <span class="badge text-bg-secondary" style={{cursor: "pointer", marginLeft: "10px"}} onClick={handleResetZoom}>Reset</span>
               </p>
               <Document
                 file={pdfUrl}
@@ -392,7 +398,7 @@ const DetailPengajuan = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b>Pengajuan Nomor Surat Baru</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
                 </ol>
               </nav>
             </div>
@@ -401,45 +407,31 @@ const DetailPengajuan = () => {
               {/* baris pertama */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputTanggalSurat" className="form-label">Tanggal Surat</label>
+                  <label htmlFor="inputTanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
                   <div className="input-group">
                     <input
                       type="date"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="tanggalSurat"
                       placeholder="Tanggal surat"
                       value={tanggalSurat}
                       onChange={handleChangeTanggalSurat}
                     />
-                    {tanggalSurat && (
-                      <div className="input-group-append" style={{ display: "flex" }}>
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label">Penanggung Jawab</label>
+                  <label htmlFor="inputAuthor" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="author"
                       placeholder="Nama penanggung jawab..."
                       value={author}
                       onChange={handleChangeAuthor}
                     />
-                    {author && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -447,46 +439,32 @@ const DetailPengajuan = () => {
               {/* baris kedua */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Perihal</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="perihal"
                       placeholder="Perihal surat..."
                       value={perihal}
                       onChange={handleChangePerihal}
                     />
-                    {perihal && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
 
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label">Kontak</label>
+                  <label htmlFor="inputNomorWhatsapp" className="form-label" style={{fontSize: "small"}}>Kontak</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="nomorWhatsappAuthor"
                       placeholder="Nomor whatsapp aktif..."
                       value={noWhatsappAuthor}
                       onChange={handleChangeNoWhatsappAuthor}
                     />
-                    {noWhatsappAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -494,10 +472,10 @@ const DetailPengajuan = () => {
               {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Direksi Penanggung Jawab</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeDireksi}
                       onChange={handleChangeKodeDireksi}
@@ -510,36 +488,22 @@ const DetailPengajuan = () => {
                       <option value="Unpas.R5">Kepala Biro</option>
                       <option value="Unpas.R7">Kepala Lembaga</option>
                     </select>
-                    {kodeDireksi && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
 
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label">Email</label>
+                  <label htmlFor="inputEmailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
                   <div className="input-group">
                     <input
                       type="email"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="emailAuthor"
                       placeholder="Email aktif..."
                       value={emailAuthor}
                       onChange={handleChangeEmailAuthor}
                     />
-                    {emailAuthor && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -547,10 +511,10 @@ const DetailPengajuan = () => {
               {/* baris keempat */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Kode Surat</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeSurat}
                       onChange={handleChangeKodeSurat}
@@ -566,22 +530,15 @@ const DetailPengajuan = () => {
                       <option value="C">C - Kepegawaian</option>
                       <option value="B">B - Keuangan</option>
                     </select>
-                    {kodeSurat && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Unit Kerja</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
-                      className="form-select"
+                      className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={unitKerja}
                       onChange={handleChangeUnitKerja}
@@ -593,13 +550,6 @@ const DetailPengajuan = () => {
                       <option value="IT">IT</option>
                       <option value="Rumah Tangga">Rumah Tangga</option>
                     </select>
-                    {unitKerja && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -607,23 +557,16 @@ const DetailPengajuan = () => {
               {/* baris kelima */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label">Tanda Tangan</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control form-control-sm"
                       id="namaYangMenandatangani"
                       placeholder="Nama yang menandatangani..."
                       value={yangMenandatangani}
                       onChange={handleChangeYangMenandatangani}
                     />
-                    {yangMenandatangani && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -639,17 +582,12 @@ const DetailPengajuan = () => {
                   <input
                     type="file"
                     className="form-control form-control-sm"
+                    accept='.pdf'
                     id="formFile"
                     onChange={handleFileChange}
                     style={{ marginTop: "10px", marginBottom: "10px" }}
+                    defaultValue={pdfUrl}
                   />
-                  {selectedFile && (
-                    <div className="input-group-append" style={{ display: "flex" }}>
-                      <span className="input-group-text" style={{ border: "none" }}>
-                        <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                      </span>
-                    </div>
-                  )}
                 </div>
 
               </div>
@@ -662,39 +600,13 @@ const DetailPengajuan = () => {
                   <span style={{ marginRight: "10px" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
                 </div> */}
                 <div class="mb-3">
-                  <span style={{ marginRight: "10px" }}>Status Dokumen:</span>
+                  <span style={{ marginRight: "10px", fontSize: "small" }}>Status Dokumen:</span>
                   <span class="badge text-bg-primary cursor-change"
                     onClick={handleClickStatusApprove} style={{ border: status === 'Approve' ? '3px solid blue' : 'none' }}>Approve</span>
-                  <span style={{ marginLeft: "10px", marginRight: "10px" }}>Atau</span>
+                  <span style={{ marginLeft: "10px", marginRight: "10px", fontSize: "small" }}>Atau</span>
                   <span class="badge text-bg-danger cursor-change"
                     onClick={handleClickStatusDitolak} style={{ border: status === 'Ditolak' ? '3px solid red' : 'none' }}>Ditolak</span>
                 </div>
-                {/* <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label">Status Dokumen</label>
-                  <div className="input-group d-flex align-items-center">
-                    <select
-                      className="form-select"
-                      aria-label="Default select example"
-                      value={status}
-                      onChange={handleChangeStatus}
-                    >
-                      <option value="">Status Dokumen</option>
-                      <option value="Reservasi">Reservasi</option>
-                      <option value="Arsip">Arsip</option>
-                      <option value="Batal">Batal</option>
-                      <option value="Progress">Progress</option>
-                      <option value="Approve">Approve</option>
-                      <option value="Ditolak">Ditolak</option>
-                    </select>
-                    {kodeDireksi && (
-                      <div className="input-group-append">
-                        <span className="input-group-text" style={{ border: "none" }}>
-                          <FontAwesomeIcon icon={faCircleCheck} style={{ color: "green" }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div> */}
               </div>
 
               {/* baris ketujuh */}
@@ -718,7 +630,7 @@ const DetailPengajuan = () => {
                     </div>
                     :
                     <div className="mb-3">
-                      <label htmlFor="inputKeterangan" class="form-label">Keterangan:</label>
+                      <label htmlFor="inputKeterangan" class="form-label" style={{fontSize: "small"}}>Keterangan:</label>
                       <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan}></textarea>
                     </div>
                 }
