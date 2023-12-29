@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-// import axios from 'axios';
-import Swal from 'sweetalert2'; // Impor SweetAlert
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from './Sidebar';
 import DataTable from 'react-data-table-component';
@@ -27,8 +27,8 @@ const Arsip = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3001/getAllData');
-      const result = await response.json();
+      const response = await axios.get('http://localhost:3001/getAllData');
+      const result = response.data;
 
       if (result.success) {
         setData(result.data);
@@ -63,21 +63,18 @@ const Arsip = () => {
     }
   };
 
-
   const deleteData = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/deleteData/${id}`, {
-        method: 'DELETE',
+      const response = await axios.delete(`http://localhost:3001/deleteData/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      const result = await response.json();
+      const result = response.data;
 
       if (result.success) {
         console.log('Data berhasil dihapus');
-        // Setelah menghapus data, Anda dapat memanggil fetchData() untuk memperbarui tampilan tabel
         fetchData();
         Swal.fire({
           icon: 'success',
@@ -94,7 +91,7 @@ const Arsip = () => {
 
   const handleDelete = (row) => {
     Swal.fire({
-      title: 'Apakah anda yakin ingin menghapus data ini ?',
+      title: 'Apakah anda yakin ingin menghapus data ini?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -102,14 +99,13 @@ const Arsip = () => {
       confirmButtonText: 'Ya, hapus!',
     }).then((result) => {
       if (result.isConfirmed) {
-        // Jika pengguna mengklik "Ya", lakukan penghapusan
         deleteData(row.ID);
       }
     });
   };
 
   const columns = [
-    { name: 'ID', selector: (row) => row.ID, sortable: true},
+    { name: 'ID', selector: (row) => row.ID, sortable: true },
     {
       name: 'Nomor Surat/Perihal',
       cell: (row) => (
@@ -171,14 +167,11 @@ const Arsip = () => {
       allowOverflow: true,
       button: true,
     },
-
-
   ];
 
   //pencarian
   useEffect(() => {
     const filteredData = data.filter(item =>
-      // Sesuaikan dengan kolom atau properti yang ingin Anda cari
       Object.values(item).some(value =>
         value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
@@ -196,8 +189,8 @@ const Arsip = () => {
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Arsip</b></li>
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Arsip</b></li>
                 </ol>
               </nav>
             </div>
@@ -241,7 +234,7 @@ const Arsip = () => {
                               value={searchTerm}
                               onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            {/* <button type="button" class="btn btn-danger"><FontAwesomeIcon icon={faTrashCan} />Hapus Data</button> */}
+                            {/* <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faTrashCan} />Hapus Data</button> */}
                           </>
                         }
                         subHeaderAlign='left'
@@ -257,11 +250,7 @@ const Arsip = () => {
             </div>
           </div>
 
-
-
-
         </div>
-
       </div>
     </div>
   )

@@ -4,12 +4,18 @@ import { faWallet, faPlus, faSquarePlus, faCircleInfo } from '@fortawesome/free-
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import Footer from './Footer';
+import accessibility from 'highcharts/modules/accessibility';
 
+// Aktifkan modul aksesibilitas
+accessibility(Highcharts);
 
 const DashboardArsipKeluar = () => {
 
   // Highcharts Rekapitulasi
   const persentaseArsipkeluarDoughnut = {
+    accessibility: {
+      enabled: false,
+    },
     credits: {
       enabled: false
     },
@@ -68,8 +74,8 @@ const DashboardArsipKeluar = () => {
       <div className='row'>
         <div className='col-lg-12'>
           <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Dashboard</b></li>
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Dashboard</b></li>
             </ol>
           </nav>
         </div>
@@ -141,7 +147,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-32</b><br />diajukan oleh: Keuangan</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
               <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
@@ -154,7 +160,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-33</b><br />diajukan oleh: IT</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
               <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
@@ -167,7 +173,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-34</b><br />diajukan oleh: Akademik</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
               <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
@@ -180,7 +186,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-35</b><br />diajukan oleh: Akademik</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
               <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
@@ -193,7 +199,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-36</b><br />diajukan oleh: Akademik</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
               <div className='row' style={{ marginTop: "10px", backgroundColor: "#CFCFCF", marginLeft: "0px", marginRight: "0px", padding: "5px", borderRadius: "5px" }}>
@@ -206,7 +212,7 @@ const DashboardArsipKeluar = () => {
                   <p style={{ marginBottom: "0px" }}><b>B-37</b><br />diajukan oleh: Akademik</p>
                 </div>
                 <div className='col-4' style={{ display: "flex", alignItems: "center" }}>
-                  <button type="button" class="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
+                  <button type="button" className="btn" style={{ backgroundColor: "black", color: "white", border: "inherit", fontSize: "12px" }}>Disetujui</button>
                 </div>
               </div>
 
@@ -238,22 +244,22 @@ const DashboardArsipKeluar = () => {
               <p style={{ textAlign: "center", marginTop: "10px", marginBottom: "10px", color: "#48BB78", fontSize: "14px" }}><b>Tahapan Pengajuan No Surat</b></p>
               <div className='row'>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Reservasi Surat Baru</b><span class="badge text-bg-success">Reservasi</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Reservasi Surat Baru</b><span className="badge text-bg-success">Reservasi</span></span>
                 </div>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pengisian Form</b><span class="badge text-bg-success">Reservasi</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pengisian Form</b><span className="badge text-bg-success">Reservasi</span></span>
                 </div>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Upload Dokumen Draft (Approval 1)</b><span class="badge text-bg-warning">Progress</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Upload Dokumen Draft (Approval 1)</b><span className="badge text-bg-warning">Progress</span></span>
                 </div>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pemeriksaan dokumen oleh Admin TU (Approval 2)</b><span class="badge text-bg-warning">Progress</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pemeriksaan dokumen oleh Admin TU (Approval 2)</b><span className="badge text-bg-warning">Progress</span></span>
                 </div>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Dokumen diterima, Nomor Surat diberikan</b><span class="badge text-bg-primary">Approve</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Dokumen diterima, Nomor Surat diberikan</b><span className="badge text-bg-primary">Approve</span></span>
                 </div>
                 <div className='col-lg-12'>
-                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pelampiran Dokumen Fisik ke Bagian Tata Usaha</b><span class="badge text-bg-danger">Arsip</span></span>
+                  <FontAwesomeIcon icon={faSquarePlus} style={{ color: "black", marginRight: "10px" }} /><span style={{ fontSize: "10px" }}><b style={{ marginRight: "5px" }}>Pelampiran Dokumen Fisik ke Bagian Tata Usaha</b><span className="badge text-bg-danger">Arsip</span></span>
                 </div>
               </div>
             </div>

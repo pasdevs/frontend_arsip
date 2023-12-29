@@ -20,10 +20,10 @@ const Sidebar = () => {
             <div className='col-lg-12' style={{ textAlign: "center" }}>
               <img src={myAvatar} alt='' style={{ width: "50px", height: "50px" }} />
               <FontAwesomeIcon className='cursor-change' data-bs-toggle="dropdown" aria-expanded="false" icon={faChevronDown} style={{}} />
-              <ul class="dropdown-menu" style={{ textAlign: "left" }}>
-                <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}><FontAwesomeIcon className='cursor-change' icon={faUserCircle} style={{ marginRight: "5px" }} />Profile</a></li>
+              <ul className="dropdown-menu" style={{ textAlign: "left" }}>
+                <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}><FontAwesomeIcon className='cursor-change' icon={faUserCircle} style={{ marginRight: "5px" }} />Profile</a></li>
                 <hr />
-                <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}><FontAwesomeIcon className='cursor-change' icon={faCircleInfo} style={{ marginRight: "5px" }} />Info App</a></li>
+                <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}><FontAwesomeIcon className='cursor-change' icon={faCircleInfo} style={{ marginRight: "5px" }} />Info App</a></li>
               </ul>
             </div>
           </div>
@@ -38,26 +38,26 @@ const Sidebar = () => {
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <Link to="/dashboard"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faHome} style={{ marginRight: "5px" }} />Dashboard</button></Link>
+          <Link to="/dashboard"><button type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faHome} style={{ marginRight: "5px" }} />Dashboard</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <Link to="/arsip"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "5px" }} />Arsip</button></Link>
+          <Link to="/arsip"><button type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faEnvelope} style={{ marginRight: "5px" }} />Arsip</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <div class="btn-group" role="group" style={{ width: "100%" }}>
-            <Link to="/pengajuan" type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faUser} style={{ marginRight: "5px" }} />Pengajuan</Link>
-            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
+          <div className="btn-group" role="group" style={{ width: "100%" }}>
+            <Link to="/pengajuan" type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faUser} style={{ marginRight: "5px" }} />Pengajuan</Link>
+            <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
             </button>
-            <ul class="dropdown-menu" style={{ textAlign: "left" }}>
-              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link class="dropdown-item" to="/pengajuanNomorSuratBaru" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengajuan Nomor Surat Baru</Link></li>
+            <ul className="dropdown-menu" style={{ textAlign: "left" }}>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/pengajuanNomorSuratBaru" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengajuan Nomor Surat Baru</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link class="dropdown-item" to="/pengajuanNomorSuratLama" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengajuan Nomor Surat Lama</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/pengajuanNomorSuratLama" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengajuan Nomor Surat Lama</Link></li>
             </ul>
           </div>
         </div>
@@ -65,24 +65,24 @@ const Sidebar = () => {
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <Link to="/laporan"><button type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faFile} style={{ marginRight: "5px" }} />Laporan</button></Link>
+          <Link to="/laporan"><button type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon icon={faFile} style={{ marginRight: "5px" }} />Laporan</button></Link>
         </div>
       </div>
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <div class="btn-group" role="group" style={{ width: "100%" }}>
-            <Link to="/pengaturan" type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faGear} style={{ marginRight: "5px" }} />Pengaturan</Link>
-            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
+          <div className="btn-group" role="group" style={{ width: "100%" }}>
+            <Link to="/pengaturan" type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faGear} style={{ marginRight: "5px" }} />Pengaturan</Link>
+            <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
             </button>
-            <ul class="dropdown-menu" style={{ textAlign: "left" }}>
-              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Export</a></li>
+            <ul className="dropdown-menu" style={{ textAlign: "left" }}>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Export</a></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Import</a></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Import</a></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Backup</a></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Backup</a></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a class="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>User Role</a></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>User Role</a></li>
             </ul>
           </div>
         </div>
@@ -93,7 +93,7 @@ const Sidebar = () => {
 
       <div className='row' style={{ marginBottom: "10px" }}>
         <div className='col-lg-12'>
-          <button onClick={handleLogout} type="button" class="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon onClick={handleLogout} icon={faArrowRightFromBracket} style={{ marginRight: "5px" }} />Logout</button>
+          <button onClick={handleLogout} type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%", textAlign: "left" }}><FontAwesomeIcon onClick={handleLogout} icon={faArrowRightFromBracket} style={{ marginRight: "5px" }} />Logout</button>
         </div >
       </div>
 
