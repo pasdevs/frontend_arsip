@@ -109,7 +109,7 @@ const Arsip = () => {
   };
 
   const columns = [
-    { name: 'ID', selector: 'ID', sortable: true },
+    { name: 'ID', selector: (row) => row.ID, sortable: true},
     {
       name: 'Nomor Surat/Perihal',
       cell: (row) => (
@@ -119,10 +119,10 @@ const Arsip = () => {
       ),
       sortable: true
     },
-    { name: 'Author', selector: 'AUTHOR', sortable: true },
+    { name: 'Author', selector: (row) => row.AUTHOR, sortable: true },
     {
       name: 'Status',
-      selector: 'STATUS',
+      selector: (row) => row.STATUS,
       sortable: true,
       cell: (row) => (
         <span className={`badge ${getStatusBadgeVariant(row.STATUS)}`}>
@@ -132,7 +132,7 @@ const Arsip = () => {
     },
     {
       name: 'Tanggal Pengajuan',
-      selector: 'TANGGAL_PENGAJUAN',
+      selector: (row) => row.TANGGAL_PENGAJUAN,
       sortable: true,
       cell: row => {
         const isoDateString = row.TANGGAL_PENGAJUAN;
@@ -146,7 +146,7 @@ const Arsip = () => {
     },
     {
       name: 'Tanggal Arsip',
-      selector: 'TANGGAL_PENGAJUAN',
+      selector: (row) => row.TANGGAL_PENGAJUAN,
       sortable: true,
       cell: row => {
         const isoDateString = row.TANGGAL_PENGAJUAN;
@@ -197,7 +197,7 @@ const Arsip = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Arsip</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Arsip</b></li>
                 </ol>
               </nav>
             </div>

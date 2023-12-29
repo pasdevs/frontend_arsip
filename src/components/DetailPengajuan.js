@@ -207,16 +207,18 @@ const DetailPengajuan = () => {
     setSerahkanDokumen("Belum");
   };
 
-  const handleCheckboxChange = () => {
-    // console.log("checkbox:", event.target.checked);
-    // if(event.target.checked === true){
-    //   setSerahkanDokumen("Sudah")
-    // }else {
-    //   serahkanDokumen("Progress")
-    // }
+  const handleCheckboxChange = (event) => {
+    console.log("checkbox:", event.target.checked);
+    if(event.target.checked === true){
+      setSerahkanDokumen("Sudah")
+      setStatus("Arsip")
+    }else {
+      setSerahkanDokumen("Progress")
+      setStatus("Approve")
+    }
 
     // Toggle nilai ketika checkbox berubah
-    setSerahkanDokumen((nilaiSebelumnya) => (nilaiSebelumnya === "Sudah" ? "Progress" : "Sudah"));
+    // setSerahkanDokumen((nilaiSebelumnya) => (nilaiSebelumnya === "Sudah" ? "Progress" : "Sudah"));
   };
 
 
@@ -316,27 +318,39 @@ const DetailPengajuan = () => {
       // Jika form valid, lanjutkan penyimpanan
       setIsFormValid(true);
 
-      // Buat objek FormData
+
       const formData = new FormData();
-      formData.append('NOMOR_SURAT', nomorSurat);
-      formData.append('YANG_MENANDATANGANI', yangMenandatangani);
-      formData.append('YANG_MENANDATANGANI_KODE', kodeDireksi);
-      formData.append('KODE_SURAT', kodeSurat);
+
+      formData.append('NOMOR_SURAT', String(nomorSurat));
+      formData.append('YANG_MENANDATANGANI', String(yangMenandatangani));
+      formData.append('YANG_MENANDATANGANI_KODE', String(kodeDireksi));
+      formData.append('KODE_SURAT', String(kodeSurat));
       formData.append('BULAN', monthToText(new Date().getMonth() + 1));
-      formData.append('BULAN_ROMAWI', currentMonth);
-      formData.append('TAHUN', currentYear);
-      formData.append('PERIHAL', perihal);
-      formData.append('UNIT_KERJA', unitKerja);
-      formData.append('STATUS', status);
+      formData.append('BULAN_ROMAWI', String(currentMonth));
+      formData.append('TAHUN', String(currentYear));
+      formData.append('PERIHAL', String(perihal));
+      formData.append('UNIT_KERJA', String(unitKerja));
+      formData.append('STATUS', String(status));
       formData.append('NOMOR_SURAT_LENGKAP', `${nomorSurat}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`);
-      formData.append('file', selectedFile.file, selectedFile.originalFileName);
-      formData.append('TANGGAL_PENGAJUAN', tanggalSurat);
-      formData.append('YANG_MEMBUBUHKAN_TTD', yangMenandatangani);
-      formData.append('AUTHOR', author);
-      formData.append('NOMOR_WA_AUTHOR', noWhatsappAuthor);
-      formData.append('EMAIL_AUTHOR', emailAuthor);
-      formData.append('KETERANGAN', keterangan);
-      formData.append('SERAHKAN_DOKUMEN', serahkanDokumen);
+      formData.append('URL_DRAFT_SURAT', String(selectedFile));
+      // formData.append('file', selectedFile.file, selectedFile.originalFileName);
+
+      // Periksa apakah ada file yang dipilih sebelum menambahkannya ke FormData
+      if (selectedFile && selectedFile.file) {
+        try {
+          formData.append('file', selectedFile.file, selectedFile.originalFileName);
+        } catch (error) {
+          console.error('Terjadi kesalahan saat menambahkan file ke FormData:', error);
+        }
+      }
+
+      formData.append('TANGGAL_PENGAJUAN', String(tanggalSurat));
+      formData.append('YANG_MEMBUBUHKAN_TTD', String(yangMenandatangani));
+      formData.append('AUTHOR', String(author));
+      formData.append('NOMOR_WA_AUTHOR', String(noWhatsappAuthor));
+      formData.append('EMAIL_AUTHOR', String(emailAuthor));
+      formData.append('KETERANGAN', String(keterangan));
+      formData.append('SERAHKAN_DOKUMEN', String(serahkanDokumen));
 
       // Kirim data ke backend
       const response = await axios.put(`http://localhost:3001/updateData/${id}`, formData, {
@@ -373,7 +387,7 @@ const DetailPengajuan = () => {
                 <FontAwesomeIcon icon={faSearchMinus} onClick={handleZoomOut} style={{ cursor: "pointer", marginRight: "10px" }} />
                 <span>{(scale * 100).toFixed()}%</span>
                 <FontAwesomeIcon icon={faSearchPlus} onClick={handleZoomIn} style={{ cursor: "pointer", marginLeft: "10px" }} />
-                <span class="badge text-bg-secondary" style={{cursor: "pointer", marginLeft: "10px"}} onClick={handleResetZoom}>Reset</span>
+                <span class="badge text-bg-secondary" style={{ cursor: "pointer", marginLeft: "10px" }} onClick={handleResetZoom}>Reset</span>
               </p>
               <Document
                 file={pdfUrl}
@@ -398,7 +412,7 @@ const DetailPengajuan = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
+                  <li class="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Pengajuan Nomor Surat Baru</b></li>
                 </ol>
               </nav>
             </div>
@@ -407,7 +421,7 @@ const DetailPengajuan = () => {
               {/* baris pertama */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputTanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
+                  <label htmlFor="inputTanggalSurat" className="form-label" style={{ fontSize: "small" }}>Tanggal Surat</label>
                   <div className="input-group">
                     <input
                       type="date"
@@ -422,7 +436,7 @@ const DetailPengajuan = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
+                  <label htmlFor="inputAuthor" className="form-label" style={{ fontSize: "small" }}>Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -439,7 +453,7 @@ const DetailPengajuan = () => {
               {/* baris kedua */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{ fontSize: "small" }}>Perihal</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -455,7 +469,7 @@ const DetailPengajuan = () => {
 
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label" style={{fontSize: "small"}}>Kontak</label>
+                  <label htmlFor="inputNomorWhatsapp" className="form-label" style={{ fontSize: "small" }}>Kontak</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -472,7 +486,7 @@ const DetailPengajuan = () => {
               {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{ fontSize: "small" }}>Direksi Penanggung Jawab</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       className="form-select form-select-sm"
@@ -494,7 +508,7 @@ const DetailPengajuan = () => {
 
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
+                  <label htmlFor="inputEmailAuthor" className="form-label" style={{ fontSize: "small" }}>Email</label>
                   <div className="input-group">
                     <input
                       type="email"
@@ -511,7 +525,7 @@ const DetailPengajuan = () => {
               {/* baris keempat */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{ fontSize: "small" }}>Kode Surat</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       className="form-select form-select-sm"
@@ -535,7 +549,7 @@ const DetailPengajuan = () => {
               </div>
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
+                  <label htmlFor="inputKodeDireksi" className="form-label" style={{ fontSize: "small" }}>Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       className="form-select form-select-sm"
@@ -557,7 +571,7 @@ const DetailPengajuan = () => {
               {/* baris kelima */}
               <div className='col-lg-6'>
                 <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
+                  <label htmlFor="inputPerihal" className="form-label" style={{ fontSize: "small" }}>Tanda Tangan</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -586,9 +600,15 @@ const DetailPengajuan = () => {
                     id="formFile"
                     onChange={handleFileChange}
                     style={{ marginTop: "10px", marginBottom: "10px" }}
-                    defaultValue={pdfUrl}
                   />
                 </div>
+
+                {/* Tampilkan URL file sebelumnya */}
+                {pdfUrl && (
+                  <p style={{ fontSize: "9px", marginTop: "5px" }}>
+                    File sebelumnya: <a href={pdfUrl} target="_blank" rel="noopener noreferrer">Lihat file</a>
+                  </p>
+                )}
 
               </div>
 
@@ -615,7 +635,7 @@ const DetailPengajuan = () => {
 
               <div className='col-lg-6'>
                 {
-                  status === "Approve" ?
+                  status === "Approve" || status === "Arsip" ?
                     <div class="mb-3">
                       <label htmlFor="inputAuthor2" className="form-label">Author</label>
                       <div className="input-group">
@@ -630,13 +650,13 @@ const DetailPengajuan = () => {
                     </div>
                     :
                     <div className="mb-3">
-                      <label htmlFor="inputKeterangan" class="form-label" style={{fontSize: "small"}}>Keterangan:</label>
+                      <label htmlFor="inputKeterangan" class="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
                       <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan}></textarea>
                     </div>
                 }
 
                 {
-                  (serahkanDokumen === "Progress" && status === "Approve") || (serahkanDokumen === "Sudah" && status === "Approve") ?
+                  (serahkanDokumen === "Progress" && status === "Approve") || (serahkanDokumen === "Sudah" && status === "Approve") || (serahkanDokumen === "Sudah" && status === "Arsip") || (serahkanDokumen === "Progress" && status === "Arsip") ?
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" value="" id="serahkanDokumen" onChange={handleCheckboxChange} checked={serahkanDokumen === "Sudah"} />
                       <label class="form-check-label" htmlFor="serahkanDokumen">
