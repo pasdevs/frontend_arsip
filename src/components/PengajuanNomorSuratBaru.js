@@ -165,25 +165,25 @@ const PengajuanNomorSuratBaru = () => {
     setCurrentMonth(monthToRoman(currentDate.getMonth() + 1)); // Perhatikan bahwa getMonth() mengembalikan indeks bulan (0-11)
 
     // cek log data
-    console.log("NOMOR_SURAT:", newNumber)
-    console.log("YANG_MENANDATANGANI:", yangMenandatangani)
-    console.log("KODE_DIREKSI:", kodeDireksi)
-    console.log("KODE_DIREKSI_NAMA:", kodeDireksiNama)
-    console.log("KODE_SURAT:", kodeSurat)
-    console.log("BULAN:", monthToText(currentDate.getMonth() + 1));
-    console.log("BULAN_ROMAWI:", currentMonth)
-    console.log("TAHUN:", currentYear);
-    console.log("PERIHAL:", perihal)
-    console.log("UNIT_KERJA:", unitKerja)
-    console.log("STATUS: Reservasi")
-    console.log("NOMOR_SURAT_LENGKAP:", nomorSuratLengkap)
-    console.log("URL_DRAFT_SURAT:", selectedFile)
-    console.log("TANGGAL_PENGAJUAN:", tanggalSurat)
-    console.log("YANG_MEMBUBUHKAN_TTD:", yangMenandatangani)
-    console.log("AUTHOR:", author)
-    console.log("NOMOR_WA_AUTHOR:", noWhatsappAuthor)
-    console.log("EMAIL_AUTHOR:", emailAuthor)
-    console.log("KETERANGAN:", keterangan)
+    // console.log("NOMOR_SURAT:", newNumber)
+    // console.log("YANG_MENANDATANGANI:", yangMenandatangani)
+    // console.log("KODE_DIREKSI:", kodeDireksi)
+    // console.log("KODE_DIREKSI_NAMA:", kodeDireksiNama)
+    // console.log("KODE_SURAT:", kodeSurat)
+    // console.log("BULAN:", monthToText(currentDate.getMonth() + 1));
+    // console.log("BULAN_ROMAWI:", currentMonth)
+    // console.log("TAHUN:", currentYear);
+    // console.log("PERIHAL:", perihal)
+    // console.log("UNIT_KERJA:", unitKerja)
+    // console.log("STATUS: Reservasi")
+    // console.log("NOMOR_SURAT_LENGKAP:", nomorSuratLengkap)
+    // console.log("URL_DRAFT_SURAT:", selectedFile)
+    // console.log("TANGGAL_PENGAJUAN:", tanggalSurat)
+    // console.log("YANG_MEMBUBUHKAN_TTD:", yangMenandatangani)
+    // console.log("AUTHOR:", author)
+    // console.log("NOMOR_WA_AUTHOR:", noWhatsappAuthor)
+    // console.log("EMAIL_AUTHOR:", emailAuthor)
+    // console.log("KETERANGAN:", keterangan)
 
 
   }, [getLastNumber, newNumber, yangMenandatangani, kodeDireksi, kodeDireksiNama, kodeSurat, currentMonth, currentYear, perihal, unitKerja, selectedFile, tanggalSurat, author, noWhatsappAuthor, emailAuthor, keterangan, nomorSuratLengkap]);
@@ -275,8 +275,8 @@ const PengajuanNomorSuratBaru = () => {
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
+                <ol className="breadcrumb">
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
                 </ol>
               </nav>
             </div>
@@ -284,8 +284,8 @@ const PengajuanNomorSuratBaru = () => {
             <div className='row' style={{ backgroundColor: "#F5F5F7", borderRadius: "5px", marginLeft: "0px", marginRight: "0px", marginBottom: "10px", padding: "20px" }}>
               {/* baris pertama */}
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputTanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
+                <div className="mb-3">
+                  <label htmlFor="tanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
                   <div className="input-group">
                     <input
                       type="date"
@@ -299,8 +299,8 @@ const PengajuanNomorSuratBaru = () => {
                 </div>
               </div>
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputAuthor" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
+                <div className="mb-3">
+                  <label htmlFor="author" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -316,8 +316,8 @@ const PengajuanNomorSuratBaru = () => {
 
               {/* baris kedua */}
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
+                <div className="mb-3">
+                  <label htmlFor="perihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -331,8 +331,8 @@ const PengajuanNomorSuratBaru = () => {
                 </div>
               </div>
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputNomorWhatsapp" className="form-label" style={{fontSize: "small"}}>Kontak</label>
+                <div className="mb-3">
+                  <label htmlFor="nomorWhatsappAuthor" className="form-label" style={{fontSize: "small"}}>Kontak</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -348,10 +348,11 @@ const PengajuanNomorSuratBaru = () => {
 
               {/* baris ketiga */}
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
+                <div className="mb-3">
+                  <label htmlFor="kodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
                   <div className="input-group d-flex align-items-center">
                     <select
+                      id='kodeDireksi'
                       className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeDireksi}
@@ -370,8 +371,8 @@ const PengajuanNomorSuratBaru = () => {
               </div>
 
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputEmailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
+                <div className="mb-3">
+                  <label htmlFor="emailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
                   <div className="input-group">
                     <input
                       type="email"
@@ -387,10 +388,11 @@ const PengajuanNomorSuratBaru = () => {
 
               {/* baris keempat */}
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
+                <div className="mb-3">
+                  <label htmlFor="kodeSurat" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
                   <div className="input-group d-flex align-items-center">
                     <select
+                      id='kodeSurat'
                       className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={kodeSurat}
@@ -411,10 +413,11 @@ const PengajuanNomorSuratBaru = () => {
                 </div>
               </div>
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputKodeDireksi" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
+                <div className="mb-3">
+                  <label htmlFor="unitKerja" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
+                      id='unitKerja'
                       className="form-select form-select-sm"
                       aria-label="Default select example"
                       value={unitKerja}
@@ -433,8 +436,8 @@ const PengajuanNomorSuratBaru = () => {
 
               {/* baris kelima */}
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <label htmlFor="inputPerihal" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
+                <div className="mb-3">
+                  <label htmlFor="namaYangMenandatangani" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -471,8 +474,8 @@ const PengajuanNomorSuratBaru = () => {
               <div className='col-lg-6'>
               </div>
               <div className='col-lg-6'>
-                <div class="mb-3">
-                  <span style={{ marginRight: "10px", fontSize: "small" }}>Status Dokumen:</span><span class="badge text-bg-dark">Progress</span>
+                <div className="mb-3">
+                  <span style={{ marginRight: "10px", fontSize: "small" }}>Status Dokumen:</span><span className="badge text-bg-dark">Progress</span>
                 </div>
               </div>
 
@@ -482,7 +485,7 @@ const PengajuanNomorSuratBaru = () => {
 
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="inputKeterangan" class="form-label" style={{fontSize: "small"}}>Keterangan:</label>
+                  <label htmlFor="keterangan" className="form-label" style={{fontSize: "small"}}>Keterangan:</label>
                   <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
                 </div>
               </div>
@@ -492,8 +495,8 @@ const PengajuanNomorSuratBaru = () => {
               </div>
 
               <div className='col-lg-6'>
-                <div class="mb-3" style={{ display: "none" }}>
-                  <label htmlFor="inputAuthor" className="form-label">NOMOR SURAT</label>
+                <div className="mb-3" style={{ display: "none" }}>
+                  <label htmlFor="nomorSuratLengkap" className="form-label">NOMOR SURAT</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -522,9 +525,9 @@ const PengajuanNomorSuratBaru = () => {
 
               {/* baris kedelapan */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
-                <div class="mb-3">
-                  <button type="button" class="btn btn-success" onClick={handleAjukanClick} style={{ marginRight: "20px" }}>Ajukan</button>
-                  <Link to="/dashboard"><button type="button" class="btn btn-secondary">Batal</button></Link>
+                <div className="mb-3">
+                  <button type="button" className="btn btn-success" onClick={handleAjukanClick} style={{ marginRight: "20px" }}>Ajukan</button>
+                  <Link to="/dashboard"><button type="button" className="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
 

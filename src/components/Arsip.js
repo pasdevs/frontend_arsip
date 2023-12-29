@@ -164,8 +164,7 @@ const Arsip = () => {
           {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" /> : ""}
         </div>
       ),
-      allowOverflow: true,
-      button: true,
+      allowoverflow: true,
     },
   ];
 
