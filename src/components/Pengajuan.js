@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAnglesLeft, faAngleRight, faAnglesRight } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 
@@ -18,6 +18,7 @@ const Pengajuan = () => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [pageCount, setPageCount] = useState(0);
 
   const formatDate = (dateString) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -32,10 +33,16 @@ const Pengajuan = () => {
     const userRole = localStorage.getItem('userRole');
     setUserLogin(userRole);
 
-  }, []);
+  }, [itemsPerPage]);
+
+  useEffect(() => {
+    const newPageCount = Math.ceil(filteredData.length / itemsPerPage);
+    setPageCount(newPageCount);
+  }, [filteredData, itemsPerPage]);
 
   const fetchData = async () => {
     try {
+      setLoading(true); // Set loading ke true sebelum fetching data
       const response = await axios.get('http://localhost:3001/getAllData');
       const result = response.data;
 
@@ -44,7 +51,6 @@ const Pengajuan = () => {
       } else {
         console.error(result.error);
       }
-
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -124,27 +130,40 @@ const Pengajuan = () => {
     }
   };
 
-
   const handlePageChange = ({ selected }) => {
-    setCurrentPage(selected);
+    // setCurrentPage(selected);
+
+    setCurrentPage(Math.min(selected, pageCount - 1));
+
+    // Pengecekan apakah selected lebih besar dari (pageCount - 1)
+    // const newCurrentPage = Math.min(selected, Math.max(0, Math.ceil(filteredData.length / itemsPerPage) - 1));
+    // setCurrentPage(newCurrentPage);
   };
 
-  const handleFirstPage = () => {
-    setCurrentPage(0);
-  };
+  // const handleFirstPage = () => {
+  //   setCurrentPage(0);
+  // };
 
-  const handleLastPage = () => {
-    setCurrentPage(Math.ceil(filteredData.length / itemsPerPage) - 1);
-  };
+  // const handleLastPage = () => {
+  //   setCurrentPage(Math.ceil(filteredData.length / itemsPerPage) - 1);
+  // };
 
   const indexOfLastItem = (currentPage + 1) * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleChangeItemsPerPage = (event) => {
-    setItemsPerPage(event.target.value);
-    console.log(event.target.value)
+    const newItemsPerPage = parseInt(event.target.value, 10);
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(0); // Set halaman kembali ke 0 ketika mengubah itemsPerPage
   };
+
+  // console.log("current page:", currentPage);
+  // console.log("page count:", pageCount);
+  // console.log("indexOfLastItem:", (currentPage + 1) * itemsPerPage);
+  // console.log("indexOfFirstItem:", indexOfLastItem - itemsPerPage);
+  // console.log("currentItems:", currentItems);
+
 
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
@@ -210,6 +229,7 @@ const Pengajuan = () => {
                           </div>
                         </div>
                         <div className="card-body table-responsive p-0 collapse show" id="collapseExample">
+                          {loading && <p>Loading...</p>}
                           <table className="table table-bordered table-hover text-nowrap table-sm" style={{ marginBottom: "0px", fontSize: "14px" }}>
                             <thead>
                               <tr>
@@ -270,14 +290,12 @@ const Pengajuan = () => {
                           </select>
                         </div>
 
-                        <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                          <button className="btn btn-link" onClick={handleFirstPage}>
-                            <FontAwesomeIcon icon={faAnglesLeft} /> {/* Ikon untuk << (first page) */}
-                          </button>
-                        </div>
 
                         <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                           <ReactPaginate
+                            forcePage={Math.min(currentPage, pageCount - 1)}
+                            // forcePage={Math.min(currentPage, Math.max(0, pageCount - 1))}
+                            // forcePage={Math.min(currentPage, Math.max(0, Math.ceil(filteredData.length / itemsPerPage) - 1))}
                             previousLabel={<FontAwesomeIcon icon={faAngleLeft} />}
                             nextLabel={<FontAwesomeIcon icon={faAngleRight} />}
                             breakLabel={'...'}
@@ -294,10 +312,8 @@ const Pengajuan = () => {
                             previousLinkClassName={'page-link'} // Bootstrap class
                             nextLinkClassName={'page-link'} // Bootstrap class
                           />
-                          <button className="btn btn-link" onClick={handleLastPage}>
-                            <FontAwesomeIcon icon={faAnglesRight} /> {/* Ikon untuk >> (last page) */}
-                          </button>
                         </div>
+
                       </div>
                     </div>
 
