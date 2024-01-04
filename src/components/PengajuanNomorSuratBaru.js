@@ -486,7 +486,7 @@ const PengajuanNomorSuratBaru = () => {
               <div className='col-lg-6'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{fontSize: "small"}}>Keterangan:</label>
-                  <textarea className="form-control" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
+                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
                 </div>
               </div>
 

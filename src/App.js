@@ -12,6 +12,14 @@ import MasterData from './components/MasterData';
 import Pengguna from './components/Pengguna';
 import Navbar from './components/Navbar';
 import FormDataPegawai from './forms/FormDataPegawai';
+import FormDataJabatan from './forms/FormDataJabatan';
+import FormDataUnitKerja from './forms/FormDataUnitKerja';
+import FormDataLokasiKerja from './forms/FormDataLokasiKerja';
+import FormDataKodeDireksi from './forms/FormDataKodeDireksi';
+import FormDataKodeSurat from './forms/FormDataKodeSurat';
+import FormPengguna from './forms/FormPengguna';
+import FormRole from './forms/FormRole';
+import TestPage from './components/TestPage';
 
 const App = () => {
   return (
@@ -30,6 +38,14 @@ const App = () => {
         <Route path="/pengguna" element={<Pengguna />} />
         <Route path="/navbar" element={<Navbar />} />
         <Route path="/formDataPegawai" element={<FormDataPegawai />} />
+        <Route path="/formDataJabatan" element={<FormDataJabatan />} />
+        <Route path="/formDataUnitKerja" element={<FormDataUnitKerja />} />
+        <Route path="/formDataLokasiKerja" element={<FormDataLokasiKerja />} />
+        <Route path="/formDataKodeDireksi" element={<FormDataKodeDireksi />} />
+        <Route path="/formDataKodeSurat" element={<FormDataKodeSurat />} />
+        <Route path="/formPengguna" element={<FormPengguna/>} />
+        <Route path="/formRole" element={<FormRole />} />
+        <Route path="/test" element={<TestPage/>} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

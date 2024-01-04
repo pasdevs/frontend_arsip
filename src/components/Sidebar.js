@@ -118,11 +118,11 @@ const Sidebar = () => {
             <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
             </button>
             <ul className="dropdown-menu" style={{ textAlign: "left" }}>
-              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengguna</a></li>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formPengguna" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengguna</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Role</a></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formRole" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Role</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Hak Akses</a></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/dashboard" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Hak Akses</Link></li>
             </ul>
           </div>
         </div>
