@@ -8,6 +8,10 @@ import PengajuanNomorSuratBaru from './components/PengajuanNomorSuratBaru';
 import Pengajuan from './components/Pengajuan';
 import Pengaturan from './components/Pengaturan';
 import DetailPengajuan from './components/DetailPengajuan';
+import MasterData from './components/MasterData';
+import Pengguna from './components/Pengguna';
+import Navbar from './components/Navbar';
+import FormDataPegawai from './forms/FormDataPegawai';
 
 const App = () => {
   return (
@@ -22,6 +26,10 @@ const App = () => {
         <Route path="/pengajuanNomorSuratbaru" element={<PengajuanNomorSuratBaru />} />
         <Route path="/detailPengajuan/:id" element={<DetailPengajuan />} />
         <Route path="/pengaturan" element={<Pengaturan />} />
+        <Route path="/masterData" element={<MasterData />} />
+        <Route path="/pengguna" element={<Pengguna />} />
+        <Route path="/navbar" element={<Navbar />} />
+        <Route path="/formDataPegawai" element={<FormDataPegawai />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>

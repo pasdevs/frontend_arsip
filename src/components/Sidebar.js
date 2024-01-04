@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faEnvelope, faUser, faFile, faGear, faArrowRightFromBracket, faChevronDown, faCircleInfo, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faEnvelope, faUser, faFile, faGear, faDatabase, faUsers, faArrowRightFromBracket, faChevronDown, faCircleInfo, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import "../App.css"
 import { Link } from 'react-router-dom';
 import myAvatar from '../image/avatar.png'
@@ -83,6 +83,46 @@ const Sidebar = () => {
               <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Backup</a></li>
               <hr />
               <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>User Role</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className='row' style={{ marginBottom: "10px" }}>
+        <div className='col-lg-12'>
+          <div className="btn-group" role="group" style={{ width: "100%" }}>
+            <Link to="/masterData" type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faDatabase} style={{ marginRight: "5px" }} />Master Data</Link>
+            <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
+            </button>
+            <ul className="dropdown-menu" style={{ textAlign: "left" }}>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataPegawai" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Pegawai</Link></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataJabatan" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Jabatan</Link></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataUnitKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Unit Kerja</Link></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataLokasiKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Lokasi Kerja</Link></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataKodeDireksi" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Direksi</Link></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/formDataKodeSurat" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Surat</Link></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className='row' style={{ marginBottom: "10px" }}>
+        <div className='col-lg-12'>
+          <div className="btn-group" role="group" style={{ width: "100%" }}>
+            <Link to="/pengguna" type="button" className="btn btn-light" style={{ fontWeight: 'bold', fontSize: "12px", textAlign: "left" }}><FontAwesomeIcon icon={faUsers} style={{ marginRight: "5px" }} />Pengguna</Link>
+            <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
+            </button>
+            <ul className="dropdown-menu" style={{ textAlign: "left" }}>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengguna</a></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Role</a></li>
+              <hr />
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><a className="dropdown-item" href="!#" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Hak Akses</a></li>
             </ul>
           </div>
         </div>
