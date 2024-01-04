@@ -164,6 +164,10 @@ const Pengajuan = () => {
   // console.log("indexOfFirstItem:", indexOfLastItem - itemsPerPage);
   // console.log("currentItems:", currentItems);
 
+  const handleRefreshData = () => {
+    fetchData()
+  }
+
 
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
@@ -223,13 +227,12 @@ const Pengajuan = () => {
                               <b style={{ fontSize: "14px" }}>Daftar Pengajuan Arsip Keluar</b>
                             </div>
                             <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                              <button type="button" className="btn btn-success btn-sm" style={{ marginRight: "10px" }} data-toggle="tooltip" title="Refresh" data-placement="top"><FontAwesomeIcon icon={faArrowsRotate} /></button>
+                              <button type="button" className="btn btn-success btn-sm" onClick={handleRefreshData} style={{ marginRight: "10px" }} data-toggle="tooltip" title="Refresh" data-placement="top"><FontAwesomeIcon icon={faArrowsRotate} /></button>
                               <button type="button" className="btn btn-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample" data-toggle="tooltip" title="Minimize" data-placement="top"><FontAwesomeIcon icon={faMinus} /></button>
                             </div>
                           </div>
                         </div>
                         <div className="card-body table-responsive p-0 collapse show" id="collapseExample">
-                          {loading && <p>Loading...</p>}
                           <table className="table table-bordered table-hover text-nowrap table-sm" style={{ marginBottom: "0px", fontSize: "14px" }}>
                             <thead>
                               <tr>
@@ -265,6 +268,7 @@ const Pengajuan = () => {
                               ))}
                             </tbody>
                           </table>
+                          {loading && <p>Loading...</p>}
                         </div>
                       </div>
                     </div>
