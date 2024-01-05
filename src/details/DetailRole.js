@@ -5,9 +5,12 @@ import "../App.css"
 import Sidebar from '../components/Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-const FormRole = () => {
+const DetailRole = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [role, setRole] = useState("");
   const [keterangan, setKeterangan] = useState("");
 
@@ -33,7 +36,37 @@ const FormRole = () => {
 
   }, [role, keterangan]);
 
-  const handleSimpanClickk = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        const response = await axios.get(`http://localhost:3001/getRoleData/${id}`, {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true
+        });
+        const result = response.data;
+        console.log("result role:", result.Role)
+        console.log("result keterangan:",  result.Keterangan)
+
+        if (result) {
+          setRole(result.Role);
+          setKeterangan(result.Keterangan);
+
+        } else {
+          console.error(result.status);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleUpdateClickk = async () => {
     try {
       if (!role || !keterangan) {
         setIsFormValid(false);
@@ -49,9 +82,9 @@ const FormRole = () => {
       // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
-      
-      // create data
-      const addRole = await axios.post("http://localhost:3001/createRoleData",
+
+      // update role
+      const updateRole = await axios.put(`http://localhost:3001/updateRole/${id}`,
         {
           Role: role,
           Keterangan: keterangan
@@ -61,33 +94,30 @@ const FormRole = () => {
           withCredentials: true
         }
       );
-  
-      if (addRole) {
+
+      if (updateRole) {
         Swal.fire({
           icon: 'success',
-          title: 'Berhasil menambahkan role!',
+          title: 'Berhasil mengupdate role!',
           confirmButtonColor: '#198754'
         });
-        window.location.href = 'http://localhost:3000/role';
-        // console.log('Data dari server:', addRole.data);
-
+        navigate('/role');
       } else {
         Swal.fire({
           icon: 'error',
-          title: 'Gagal menambahkan role!',
+          title: 'Gagal mengupdate role!',
           confirmButtonColor: '#198754'
         });
-        console.error('Gagal menambahkan role!');
+        console.error('Gagal mengupdate role!');
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Terjadi kesalahan saat menambahkan role!',
+        title: 'Terjadi kesalahan saat mengupdate role!',
         confirmButtonColor: '#198754'
       });
-      console.error('Terjadi kesalahan saat menambahkan role!', error);
+      console.error('Terjadi kesalahan saat mengupdate role!', error);
     }
-
   };
 
   return (
@@ -101,7 +131,7 @@ const FormRole = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Form Role</b></li>
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Detail Role</b></li>
                 </ol>
               </nav>
             </div>
@@ -146,7 +176,7 @@ const FormRole = () => {
               {/* baris kelima */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
-                  <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>
+                  <button type="button" className="btn btn-success" onClick={handleUpdateClickk} style={{ marginRight: "20px" }}>Update</button>
                   <Link to="/role"><button type="button" className="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
@@ -161,4 +191,4 @@ const FormRole = () => {
   )
 }
 
-export default FormRole
+export default DetailRole

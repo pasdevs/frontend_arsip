@@ -95,17 +95,17 @@ const Sidebar = () => {
             <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
             </button>
             <ul className="dropdown-menu" style={{ textAlign: "left" }}>
-              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataPegawai" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Pegawai</Link></li>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/dataPegawai" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Pegawai</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataJabatan" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Jabatan</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/dataJabatan" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Jabatan</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataUnitKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Unit Kerja</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/dataUnitKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Unit Kerja</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataLokasiKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Lokasi Kerja</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/dataLokasiKerja" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Lokasi Kerja</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formDataKodeDireksi" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Direksi</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/dataKodeDireksi" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Direksi</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/formDataKodeSurat" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Surat</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/dataKodeSurat" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Data Kode Surat</Link></li>
             </ul>
           </div>
         </div>
@@ -118,11 +118,11 @@ const Sidebar = () => {
             <button type="button" className="btn btn-light dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" style={{ textAlign: "right" }}>
             </button>
             <ul className="dropdown-menu" style={{ textAlign: "left" }}>
-              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formPengguna" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengguna</Link></li>
+              <li style={{ marginTop: "-5px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/pengguna" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Pengguna</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/formRole" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Role</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-15px" }}><Link className="dropdown-item" to="/role" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Role</Link></li>
               <hr />
-              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/dashboard" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Hak Akses</Link></li>
+              <li style={{ marginTop: "-15px", marginBottom: "-5px" }}><Link className="dropdown-item" to="/hakAkses" style={{ fontWeight: 'bold', fontSize: "12px", width: "100%" }}>Hak Akses</Link></li>
             </ul>
           </div>
         </div>

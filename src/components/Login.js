@@ -16,24 +16,24 @@ const Login = () => {
 
   // const navigate = useNavigate();
 
-  const checkLoginStatus = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/checkLoginStatus', { withCredentials: true });
-      if (response.data.loggedIn) {
-        // Jika pengguna sudah login, redirect ke halaman lain (misalnya, dashboard)
-        window.location.href = '/navbar'; // Sesuaikan dengan path halaman lainnya
-      }else{
-        window.location.href = '/login';
-      }
-    } catch (error) {
-      console.error('Error checking login status:', error.message);
-      // Handle error jika perlu
-    }
-  };
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3001/checkLoginStatus', { withCredentials: true });
+  //     if (response.data.loggedIn) {
+  //       // Jika pengguna sudah login, redirect ke halaman lain (misalnya, dashboard)
+  //       window.location.href = '/navbar'; // Sesuaikan dengan path halaman lainnya
+  //     }else{
+  //       window.location.href = '/login';
+  //     }
+  //   } catch (error) {
+  //     console.error('Error checking login status:', error.message);
+  //     // Handle error jika perlu
+  //   }
+  // };
 
   useEffect(() => {
     // Panggil fungsi untuk memeriksa status login ketika komponen mount
-    checkLoginStatus();
+    // checkLoginStatus();
   }, []);
 
   const handleLogin = async () => {
