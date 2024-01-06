@@ -48,12 +48,12 @@ const DetailRole = () => {
           withCredentials: true
         });
         const result = response.data;
-        console.log("result role:", result.Role)
-        console.log("result keterangan:",  result.Keterangan)
+        console.log("result status:", result.status)
+        console.log("result message:",  result.message.Role)
 
-        if (result) {
-          setRole(result.Role);
-          setKeterangan(result.Keterangan);
+        if (result.status) {
+          setRole(result.message.Role);
+          setKeterangan(result.message.Keterangan);
 
         } else {
           console.error(result.status);
@@ -84,7 +84,7 @@ const DetailRole = () => {
       const resultCsrf = getCsrf.data.csrfToken;
 
       // update role
-      const updateRole = await axios.put(`http://localhost:3001/updateRole/${id}`,
+      const updateRole = await axios.patch(`http://localhost:3001/updateRole/${id}`,
         {
           Role: role,
           Keterangan: keterangan
