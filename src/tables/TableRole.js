@@ -18,7 +18,7 @@ const TableRole = () => {
   // const [userLogin, setUserLogin] = useState("");
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [pageCount, setPageCount] = useState(0);
 
   const navigate = useNavigate();
@@ -240,7 +240,6 @@ const TableRole = () => {
                     value={itemsPerPage}
                     onChange={handleChangeItemsPerPage}
                   >
-                    <option value="5">5 baris</option>
                     <option value="10">10 baris</option>
                     <option value="25">25 baris</option>
                     <option value="50">50 baris</option>
