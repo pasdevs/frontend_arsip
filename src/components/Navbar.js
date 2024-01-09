@@ -11,7 +11,7 @@ const Navbar = () => {
 
   useEffect(() => {
     // Lakukan permintaan ke server untuk memeriksa status login
-    axios.get('http://localhost:3001/checkLoginStatus', { withCredentials: true })
+    axios.get('http://localhost:3001/auth/checkLoginStatus', { withCredentials: true })
       .then(response => {
         if (response.data.loggedIn) {
           setLoggedIn(true);
@@ -25,11 +25,11 @@ const Navbar = () => {
       .catch(error => {
         console.error('Error checking login status:', error.message);
       });
-  }, []); // Efek ini hanya berjalan sekali saat komponen dimuat
+  }, []);
 
   const handleLogout = () => {
     // Lakukan permintaan ke server untuk logout
-    axios.post('http://localhost:3001/logout', null, { withCredentials: true })
+    axios.post('http://localhost:3001/auth/logout', null, { withCredentials: true })
       .then(response => {
         setLoggedIn(false);
         setUsername('');

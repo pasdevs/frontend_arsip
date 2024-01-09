@@ -51,7 +51,7 @@ const FormRole = () => {
       const resultCsrf = getCsrf.data.csrfToken;
       
       // create data
-      const addRole = await axios.post("http://localhost:3001/createRoleData",
+      const addRole = await axios.post("http://localhost:3001/role",
         {
           Role: role,
           Keterangan: keterangan

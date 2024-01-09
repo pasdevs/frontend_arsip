@@ -74,3 +74,17 @@ li {
     position: relative;
   }
 }
+
+
+/* Membuat footer selalu berada di bawah halaman */
+footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  /* background-color: #1833B8; */
+  /* background-color: #1A2D93; */
+  background-color: #040d3f;
+  color: white; /* Ganti dengan warna teks yang Anda inginkan */
+  text-align: center;
+  padding: 10px 0; /* Ruang di atas dan bawah teks dalam footer */
+}

@@ -7,6 +7,7 @@ import DataTable from 'react-data-table-component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { checkLoginStatus } from '../auth/CheckLogin';
 
 const Arsip = () => {
 
@@ -14,14 +15,33 @@ const Arsip = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [userLogin, setUserLogin] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+
+
+  // useEffect(() => {
+  //   const checkStatus = async () => {
+  //     try {
+  //       const isLoggedIn = await checkLoginStatus();
+  //       if (isLoggedIn) {
+  //         setLoggedIn(true);
+  //       } else {
+  //         setLoggedIn(false);
+  //       }
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   };
+
+  //   checkStatus();
+  // }, []);
 
   // Fetch data from the server when the component mounts
   useEffect(() => {
     fetchData();
 
-    const userRole = localStorage.getItem('userRole');
-    setUserLogin(userRole);
+    // if (!loggedIn) {
+    //   window.location.href = 'http://localhost:3000/login';
+    // }
 
   }, []);
 
@@ -161,7 +181,7 @@ const Arsip = () => {
           <Link to={`/detailPengajuan/${row.ID}`}>
             <FontAwesomeIcon icon={faLayerGroup} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px" }} />
           </Link>
-          {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" /> : ""}
+          <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" />
         </div>
       ),
       allowoverflow: true,
@@ -179,78 +199,80 @@ const Arsip = () => {
   }, [searchTerm, data]);
 
   return (
-    <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
-      <Sidebar />
+    <div>
+        <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
+          <Sidebar />
 
-      {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
-          <div className='row'>
-            <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
-              <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Arsip</b></li>
-                </ol>
-              </nav>
-            </div>
-          </div>
+          {/* KONTEN */}
+          <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
+            <div className='container'>
+              <div className='row'>
+                <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
+                  <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
+                    <ol className="breadcrumb">
+                      <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Arsip</b></li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
 
-          <div className='row'>
-            <div className='col-lg-12'>
-              <ul className="nav nav-underline" style={{ fontSize: "12px" }}>
-                <li className="nav-item">
-                  <a className="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1" role="tab" style={{ color: "black" }}>
-                    Arsip Keluar
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2" role="tab" style={{ color: "black" }}>
-                    Arsip Masuk
-                  </a>
-                </li>
-              </ul>
+              <div className='row'>
+                <div className='col-lg-12'>
+                  <ul className="nav nav-underline" style={{ fontSize: "12px" }}>
+                    <li className="nav-item">
+                      <a className="nav-link active" id="tab1-tab" data-bs-toggle="pill" href="#tab1" role="tab" style={{ color: "black" }}>
+                        Arsip Keluar
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a className="nav-link" id="tab2-tab" data-bs-toggle="pill" href="#tab2" role="tab" style={{ color: "black" }}>
+                        Arsip Masuk
+                      </a>
+                    </li>
+                  </ul>
 
-              <div className="tab-content">
-                <div className="tab-pane fade show active" id="tab1" role="tabpanel">
-                  <div className='row'>
-                    <div className='col-lg-12'>
-                      {/* Data Table */}
-                      <DataTable
-                        title={<p style={{ fontSize: '12px', fontWeight: "bolder", marginBottom: "0px" }}>Daftar Pengajuan Arsip Keluar</p>}
-                        columns={columns}
-                        data={filteredData}
-                        progressPending={loading}
-                        pagination
-                        selectableRows
-                        fixedHeader
-                        selectableRowsHighlight
-                        highlightOnHover
-                        subHeader
-                        subHeaderComponent={
-                          <>
-                            <input type='text' className='form-control w-25'
-                              placeholder='Search...'
-                              value={searchTerm}
-                              onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            {/* <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faTrashCan} />Hapus Data</button> */}
-                          </>
-                        }
-                        subHeaderAlign='left'
-                      />
+                  <div className="tab-content">
+                    <div className="tab-pane fade show active" id="tab1" role="tabpanel">
+                      <div className='row'>
+                        <div className='col-lg-12'>
+                          {/* Data Table */}
+                          <DataTable
+                            title={<p style={{ fontSize: '12px', fontWeight: "bolder", marginBottom: "0px" }}>Daftar Pengajuan Arsip Keluar</p>}
+                            columns={columns}
+                            data={filteredData}
+                            progressPending={loading}
+                            pagination
+                            selectableRows
+                            fixedHeader
+                            selectableRowsHighlight
+                            highlightOnHover
+                            subHeader
+                            subHeaderComponent={
+                              <>
+                                <input type='text' className='form-control w-25'
+                                  placeholder='Search...'
+                                  value={searchTerm}
+                                  onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                                {/* <button type="button" className="btn btn-danger"><FontAwesomeIcon icon={faTrashCan} />Hapus Data</button> */}
+                              </>
+                            }
+                            subHeaderAlign='left'
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="tab-pane fade" id="tab2" role="tabpanel">
+                      <h3>Arsip Masuk</h3>
                     </div>
                   </div>
-                </div>
-                <div className="tab-pane fade" id="tab2" role="tabpanel">
-                  <h3>Arsip Masuk</h3>
+
                 </div>
               </div>
 
             </div>
           </div>
-
-        </div>
-      </div>
+        </div> 
     </div>
   )
 }

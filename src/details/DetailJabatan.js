@@ -5,17 +5,20 @@ import "../App.css"
 import Sidebar from '../components/Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
-const FormDataJabatan = () => {
-  const [jabatan, setJabatanPegawai] = useState("");
+const DetailJabatan = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [jabatan, setJabatan] = useState("");
   const [keterangan, setKeterangan] = useState("");
 
   const [isFormValid, setIsFormValid] = useState(true);
 
 
-  const handleChangeJabatanPegawai = (event) => {
-    setJabatanPegawai(event.target.value);
+  const handleChangeJabatan = (event) => {
+    setJabatan(event.target.value);
     console.log(event.target.value)
   };
 
@@ -28,14 +31,42 @@ const FormDataJabatan = () => {
   useEffect(() => {
 
     // cek log data
-    console.log("Jabatan Pegawai:", jabatan)
+    console.log("Jabatan:", jabatan)
     console.log("Keterangan:", keterangan)
 
   }, [jabatan, keterangan]);
 
-  const handleSimpanClickk = async (event) => {
-    // alert("Button Simpan Clicked");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
 
+        const response = await axios.get(`http://localhost:3001/jabatan/${id}`, {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true
+        });
+        const result = response.data;
+        console.log("result jabatan:", result.Jabatan)
+        console.log("result keterangan:",  result.Keterangan)
+
+        if (result) {
+          setJabatan(result.Jabatan);
+          setKeterangan(result.Keterangan);
+
+        } else {
+          console.error(result.status);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleUpdateClickk = async () => {
     try {
       if (!jabatan || !keterangan) {
         setIsFormValid(false);
@@ -51,9 +82,9 @@ const FormDataJabatan = () => {
       // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
-      
-      // create data
-      const addJabatan = await axios.post("http://localhost:3001/jabatan",
+
+      // update jabatan
+      const updateRole = await axios.put(`http://localhost:3001/jabatan/${id}`,
         {
           Jabatan: jabatan,
           Keterangan: keterangan
@@ -63,31 +94,29 @@ const FormDataJabatan = () => {
           withCredentials: true
         }
       );
-  
-      if (addJabatan) {
+
+      if (updateRole) {
         Swal.fire({
           icon: 'success',
-          title: 'Berhasil menambahkan jabatan!',
+          title: 'Berhasil mengupdate jabatan!',
           confirmButtonColor: '#198754'
         });
-        window.location.href = 'http://localhost:3000/dataJabatan';
-        // console.log('Data dari server:', addRole.data);
-
+        navigate('/dataJabatan');
       } else {
         Swal.fire({
           icon: 'error',
-          title: 'Gagal menambahkan role!',
+          title: 'Gagal mengupdate jabatan!',
           confirmButtonColor: '#198754'
         });
-        console.error('Gagal menambahkan jabatan!');
+        console.error('Gagal mengupdate jabatan!');
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Terjadi kesalahan saat menambahkan jabatan!',
+        title: 'Terjadi kesalahan saat mengupdate jabatan!',
         confirmButtonColor: '#198754'
       });
-      console.error('Terjadi kesalahan saat menambahkan jabatan!', error);
+      console.error('Terjadi kesalahan saat mengupdate jabatan!', error);
     }
   };
 
@@ -102,7 +131,7 @@ const FormDataJabatan = () => {
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Form Data Jabatan</b></li>
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Detail Role</b></li>
                 </ol>
               </nav>
             </div>
@@ -117,9 +146,9 @@ const FormDataJabatan = () => {
                       type="text"
                       className="form-control form-control-sm"
                       id="jabatan"
-                      placeholder="Jabatan Pegawai"
+                      placeholder="Jabatan"
                       value={jabatan}
-                      onChange={handleChangeJabatanPegawai}
+                      onChange={handleChangeJabatan}
                     />
                   </div>
                 </div>
@@ -134,7 +163,7 @@ const FormDataJabatan = () => {
 
               {/* alert jika belum terisi semua */}
               <div className='col-lg-6'>
-                {/* <p style={{ display: "none" }}>Nomor terakhir untuk kode surat {kodeSurat} : {lastNumber}</p> */}
+
               </div>
               <div className='col-lg-6'>
                 <div className='mb-3'>
@@ -147,7 +176,7 @@ const FormDataJabatan = () => {
               {/* baris kelima */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
-                  <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>
+                  <button type="button" className="btn btn-success" onClick={handleUpdateClickk} style={{ marginRight: "20px" }}>Update</button>
                   <Link to="/dataJabatan"><button type="button" className="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
@@ -162,4 +191,4 @@ const FormDataJabatan = () => {
   )
 }
 
-export default FormDataJabatan
+export default DetailJabatan

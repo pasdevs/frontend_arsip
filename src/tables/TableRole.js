@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
@@ -6,20 +6,18 @@ import Sidebar from '../components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 
 const TableRole = () => {
 
-  const [data, setData] = useState([]);
+  const [totalData, setTotalData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  // const [userLogin, setUserLogin] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [pageCount, setPageCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -29,36 +27,27 @@ const TableRole = () => {
     return formattedDate;
   };
 
-
-  // Fetch data from the server when the component mounts
-  useEffect(() => {
-    fetchData();
-
-    // const userRole = localStorage.getItem('userRole');
-    // setUserLogin(userRole);
-
-  }, [itemsPerPage]);
-
-  useEffect(() => {
-    const newPageCount = Math.ceil(filteredData.length / itemsPerPage);
-    setPageCount(newPageCount);
-  }, [filteredData, itemsPerPage]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
 
-      const response = await axios.get('http://localhost:3001/getRoleData', {
+      const response = await axios.get('http://localhost:3001/role', {
         headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true
+        withCredentials: true,
+        params: {
+          page: currentPage + 1,
+          limit: itemsPerPage,
+          search: searchTerm
+        }
       });
-      const result = response.data;
 
-      if (result) {
-        setData(result.data);
+      const result = response.data;
+      if (result.status) {
+        setTotalData(result.total);
+        setFilteredData(result.data);
+        setTotalPages(result.totalPages);
 
       } else {
         console.error(result.status);
@@ -68,33 +57,34 @@ const TableRole = () => {
       console.error('Error fetching data:', error);
       setLoading(false);
     }
-  };
+  }, [currentPage, itemsPerPage, searchTerm]);
 
-  //pencarian
   useEffect(() => {
-    const filteredData = data.filter(item =>
-      Object.values(item).some(value =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredData(filteredData);
-  }, [searchTerm, data]);
+    fetchData();
+  }, [fetchData]);
 
-  //delete data
+  // useEffect(() => {
+  //   const filteredData = data.filter(item =>
+  //     Object.values(item).some(value =>
+  //       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  //     )
+  //   );
+  //   setFilteredData(filteredData);
+  // }, [searchTerm, data]);
+
   const deleteData = async (id) => {
     try {
-      // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
 
-      const response = await axios.delete(`http://localhost:3001/deleteRoleData/${id}`, {
+      const response = await axios.delete(`http://localhost:3001/role/${id}`, {
         headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
         withCredentials: true
       });
 
       const result = response.data;
 
-      if (result) {
+      if (result.status) {
         console.log('Data berhasil dihapus');
         fetchData();
         Swal.fire({
@@ -130,22 +120,26 @@ const TableRole = () => {
   };
 
   const handlePageChange = ({ selected }) => {
-    setCurrentPage(Math.min(selected, pageCount - 1));
+    // setCurrentPage(selected);
+    setCurrentPage(Math.min(selected, totalPages - 1));
   };
 
-  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
-
   const handleChangeItemsPerPage = (event) => {
+    // setItemsPerPage(event.target.value);
     const newItemsPerPage = parseInt(event.target.value, 10);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(0); // Set halaman kembali ke 0 ketika mengubah itemsPerPage
-  };
+  }
+
+  // const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+  // // const indexOfLastItem = (currentPage * itemsPerPage) + itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleRefreshData = () => {
-    fetchData()
+    fetchData();
   }
+
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
       <Sidebar />
@@ -196,6 +190,7 @@ const TableRole = () => {
                   <table className="table table-bordered table-hover text-nowrap table-sm" style={{ marginBottom: "0px", fontSize: "14px" }}>
                     <thead>
                       <tr>
+                        <th>ID</th>
                         <th>No</th>
                         <th>Role</th>
                         <th>Keterangan</th>
@@ -205,8 +200,9 @@ const TableRole = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentItems.map((item, index) => (
+                      {filteredData.map((item, index) => (
                         <tr key={item.RoleID}>
+                          <td>{item.RoleID}</td>
                           <td>{index + 1}</td>
                           <td>{item.Role}</td>
                           <td>{item.Keterangan}</td>
@@ -230,7 +226,8 @@ const TableRole = () => {
             <div className='col-lg-12'>
               <div className='row'>
                 <div className='col-lg-2'>
-                  <p style={{ fontSize: "14px" }}>Total Data: {filteredData.length}</p>
+                  {/* <p style={{ fontSize: "14px" }}>Total Data: {filteredData.length}</p> */}
+                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages} ({totalData} data)</p>
                 </div>
                 <div className='col-lg-2'>
                   <select
@@ -249,14 +246,13 @@ const TableRole = () => {
 
 
                 <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                  {/* pagination */}
                   <ReactPaginate
-                    forcePage={Math.min(currentPage, pageCount - 1)}
-                    // forcePage={Math.min(currentPage, Math.max(0, pageCount - 1))}
-                    // forcePage={Math.min(currentPage, Math.max(0, Math.ceil(filteredData.length / itemsPerPage) - 1))}
+                    forcePage={Math.min(currentPage, totalPages - 1)}
                     previousLabel={<FontAwesomeIcon icon={faAngleLeft} />}
                     nextLabel={<FontAwesomeIcon icon={faAngleRight} />}
                     breakLabel={'...'}
-                    pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+                    pageCount={totalPages}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePageChange}
@@ -269,6 +265,7 @@ const TableRole = () => {
                     previousLinkClassName={'page-link'} // Bootstrap class
                     nextLinkClassName={'page-link'} // Bootstrap class
                   />
+
                 </div>
 
               </div>

@@ -43,7 +43,7 @@ const DetailRole = () => {
         const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
         const resultCsrf = getCsrf.data.csrfToken;
 
-        const response = await axios.get(`http://localhost:3001/getRoleData/${id}`, {
+        const response = await axios.get(`http://localhost:3001/role/${id}`, {
           headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
           withCredentials: true
         });
@@ -84,7 +84,7 @@ const DetailRole = () => {
       const resultCsrf = getCsrf.data.csrfToken;
 
       // update role
-      const updateRole = await axios.patch(`http://localhost:3001/updateRole/${id}`,
+      const updateRole = await axios.patch(`http://localhost:3001/role/${id}`,
         {
           Role: role,
           Keterangan: keterangan

@@ -1,14 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faEnvelope, faUser, faFile, faGear, faDatabase, faUsers, faArrowRightFromBracket, faChevronDown, faCircleInfo, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import "../App.css"
 import { Link } from 'react-router-dom';
 import myAvatar from '../image/avatar.png'
+import axios from 'axios';
+
 
 const Sidebar = () => {
+  // const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+
+  // useEffect(() => {
+  //   // Lakukan permintaan ke server untuk memeriksa status login
+  //   axios.get('http://localhost:3001/auth/checkLoginStatus', { withCredentials: true })
+  //     .then(response => {
+  //       if (response.data.loggedIn) {
+  //         setLoggedIn(true);
+  //         setUsername(response.data.username);
+  //       } else {
+  //         setLoggedIn(false);
+  //         setUsername('');
+  //         window.location.href = 'http://localhost:3000/login';
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error checking login status:', error.message);
+  //     });
+  // }, [])
+
   const handleLogout = () => {
-    localStorage.removeItem('userRole');
-    window.location.href = '/login';
+    // Lakukan permintaan ke server untuk logout
+    axios.post('http://localhost:3001/auth/logout', null, { withCredentials: true })
+      .then(response => {
+        // setLoggedIn(false);
+        setUsername('');
+        window.location.href = 'http://localhost:3000/login';
+      })
+      .catch(error => {
+        console.error('Error during logout:', error.message);
+      });
   };
 
   return (
@@ -29,7 +60,7 @@ const Sidebar = () => {
           </div>
           <div className='row'>
             <div className='col-lg-12' style={{ textAlign: "center" }}>
-              <b><p style={{ fontSize: "10px" }}>Hello, Darth Vader!</p></b>
+              <b><p style={{ fontSize: "10px" }}>Hello, {username}!</p></b>
               <p style={{ fontSize: "10px", marginTop: "-15px" }}>Super Admin</p>
             </div>
           </div>

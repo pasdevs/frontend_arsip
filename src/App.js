@@ -29,7 +29,16 @@ import TablePengguna from './tables/TablePengguna';
 import TableRole from './tables/TableRole';
 import TestPage from './components/TestPage';
 import BaseUrl from './api/BaseUrl';
+import DetailPengguna from './details/DetailPengguna';
 import DetailRole from './details/DetailRole';
+import DetailPegawai from './details/DetailPegawai';
+import DetailJabatan from './details/DetailJabatan';
+import DetailUnitKerja from './details/DetailUnitKerja';
+import DetailLokasiKerja from './details/DetailLokasiKerja';
+import DetailKodeDireksi from './details/DetailKodeDireksi';
+import DetailKodeSurat from './details/DetailKodeSurat';
+
+
 
 const App = () => {
   return (
@@ -56,12 +65,19 @@ const App = () => {
         <Route path="/formPengguna" element={<FormPengguna/>} />
         <Route path="/formRole" element={<FormRole />} />
         <Route path="/dataPegawai" element={<TableDataPegawai />} />
-        <Route path="/dataJabatan" element={<TableDataJabatan />} />
+        <Route path="/dataPegawai/:id" element={<DetailPegawai />} />
+        <Route path="/dataJabatan" exact element={<TableDataJabatan />} />
+        <Route path="/dataJabatan/:id" element={<DetailJabatan />} />
         <Route path="/dataUnitKerja" element={<TableDataUnitKerja />} />
+        <Route path="/dataUnitKerja/:id" element={<DetailUnitKerja />} />
         <Route path="/dataLokasiKerja" element={<TableDataLokasiKerja />} />
+        <Route path="/dataLokasiKerja/:id" element={<DetailLokasiKerja />} />
         <Route path="/dataKodeDireksi" element={<TableDataKodeDireksi />} />
+        <Route path="/dataKodeDireksi/:id" element={<DetailKodeDireksi />} />
         <Route path="/dataKodeSurat" element={<TableDataKodeSurat />} />
+        <Route path="/dataKodeSurat/:id" element={<DetailKodeSurat />} />
         <Route path="/pengguna" element={<TablePengguna/>} />
+        <Route path="/pengguna/:id" element={<DetailPengguna/>} />
         <Route path="/role" element={<TableRole />} />
         <Route path="/role/:id" element={<DetailRole />} />
         <Route path="/test" element={<TestPage/>} />
