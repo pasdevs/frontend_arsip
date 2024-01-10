@@ -11,7 +11,7 @@ import ReactPaginate from 'react-paginate';
 
 const TableRole = () => {
 
-  const [totalData, setTotalData] = useState([]);
+  const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -225,11 +225,11 @@ const TableRole = () => {
 
             <div className='col-lg-12'>
               <div className='row'>
-                <div className='col-lg-2'>
+                <div className='col-lg-3' style={{marginTop: "10px"}}>
                   {/* <p style={{ fontSize: "14px" }}>Total Data: {filteredData.length}</p> */}
-                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages} ({totalData} data)</p>
+                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{marginLeft: "10px"}}>({totalData ? totalData : 0 } data)</span></p>
                 </div>
-                <div className='col-lg-2'>
+                <div className='col-lg-2' style={{marginTop: "10px"}}>
                   <select
                     id='itemsPerPage'
                     className="form-select form-select-sm"
@@ -245,7 +245,7 @@ const TableRole = () => {
                 </div>
 
 
-                <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: "10px" }}>
                   {/* pagination */}
                   <ReactPaginate
                     forcePage={Math.min(currentPage, totalPages - 1)}
