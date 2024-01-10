@@ -29,13 +29,28 @@ const Sidebar = () => {
   //     });
   // }, [])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Lakukan permintaan ke server untuk logout
+    // try {
+    //   const response = await axios.post('http://localhost:3001/auth/logout');
+    //   if (response.data.success) {
+    //     console.log('Logout successful');
+    //     localStorage.removeItem("_aa");
+    //     window.location.href = 'http://localhost:3000/login';
+    //   } else {
+    //     console.error('Logout failed:', response.data.message);
+    //   }
+    // } catch (error) {
+    //   console.error('Error during logout:', error.message);
+    // }
+
     axios.post('http://localhost:3001/auth/logout', null, { withCredentials: true })
       .then(response => {
         // setLoggedIn(false);
         setUsername('');
         window.location.href = 'http://localhost:3000/login';
+        localStorage.removeItem("_aa");
+        console.log("message:",response.data.message);
       })
       .catch(error => {
         console.error('Error during logout:', error.message);

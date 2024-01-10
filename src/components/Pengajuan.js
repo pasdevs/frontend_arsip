@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
@@ -6,19 +6,21 @@ import Sidebar from './Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 
 const Pengajuan = () => {
 
-  const [data, setData] = useState([]);
+  const [statusGetData, setStatusGetData] = useState(true);
+  const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [userLogin, setUserLogin] = useState("");
-
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
-  const [pageCount, setPageCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const navigate = useNavigate();
 
   const formatDate = (dateString) => {
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -26,52 +28,59 @@ const Pengajuan = () => {
     return formattedDate;
   };
 
-  // Fetch data from the server when the component mounts
-  useEffect(() => {
-    fetchData();
-
-    const userRole = localStorage.getItem('userRole');
-    setUserLogin(userRole);
-
-  }, [itemsPerPage]);
-
-  useEffect(() => {
-    const newPageCount = Math.ceil(filteredData.length / itemsPerPage);
-    setPageCount(newPageCount);
-  }, [filteredData, itemsPerPage]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      setLoading(true); // Set loading ke true sebelum fetching data
-      const response = await axios.get('http://localhost:3001/getAllData');
-      const result = response.data;
+      setLoading(true);
+      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+      const resultCsrf = getCsrf.data.csrfToken;
 
-      if (result.success) {
-        setData(result.data);
+      const response = await axios.get('http://localhost:3001/pengajuan', {
+        headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+        withCredentials: true,
+        params: {
+          page: currentPage + 1,
+          limit: itemsPerPage,
+          search: searchTerm
+        }
+      });
+
+      const result = response.data;
+      if (result.status) {
+        setTotalData(result.total);
+        setFilteredData(result.data);
+        setTotalPages(result.totalPages);
+        setStatusGetData(true)
+
       } else {
-        console.error(result.error);
+        console.error(result.status);
+        setStatusGetData(false)
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
+      setStatusGetData(false)
     }
-  };
+  }, [currentPage, itemsPerPage, searchTerm]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   //pencarian
-  useEffect(() => {
-    const filteredData = data.filter(item =>
-      Object.values(item).some(value =>
-        value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredData(filteredData);
-  }, [searchTerm, data]);
+  // useEffect(() => {
+  //   const filteredData = data.filter(item =>
+  //     Object.values(item).some(value =>
+  //       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  //     )
+  //   );
+  //   setFilteredData(filteredData);
+  // }, [searchTerm, data]);
 
   //delete data
   const deleteData = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:3001/deleteData/${id}`, {
+      const response = await axios.delete(`http://localhost:3001/pengajuan/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -111,7 +120,6 @@ const Pengajuan = () => {
   };
 
   const getStatusBadgeVariant = (status) => {
-    // Define colors for different status values
     switch (status) {
       case 'Reservasi':
         return 'text-bg-success';
@@ -130,44 +138,23 @@ const Pengajuan = () => {
     }
   };
 
-  const handlePageChange = ({ selected }) => {
-    // setCurrentPage(selected);
-
-    setCurrentPage(Math.min(selected, pageCount - 1));
-
-    // Pengecekan apakah selected lebih besar dari (pageCount - 1)
-    // const newCurrentPage = Math.min(selected, Math.max(0, Math.ceil(filteredData.length / itemsPerPage) - 1));
-    // setCurrentPage(newCurrentPage);
+  const handleDetail = (id) => {
+    navigate(`/detailPengajuan/${id}`)
   };
 
-  // const handleFirstPage = () => {
-  //   setCurrentPage(0);
-  // };
-
-  // const handleLastPage = () => {
-  //   setCurrentPage(Math.ceil(filteredData.length / itemsPerPage) - 1);
-  // };
-
-  const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const handlePageChange = ({ selected }) => {
+    setCurrentPage(Math.min(selected, totalPages - 1));
+  };
 
   const handleChangeItemsPerPage = (event) => {
     const newItemsPerPage = parseInt(event.target.value, 10);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(0); // Set halaman kembali ke 0 ketika mengubah itemsPerPage
+    setCurrentPage(0);
   };
-
-  // console.log("current page:", currentPage);
-  // console.log("page count:", pageCount);
-  // console.log("indexOfLastItem:", (currentPage + 1) * itemsPerPage);
-  // console.log("indexOfFirstItem:", indexOfLastItem - itemsPerPage);
-  // console.log("currentItems:", currentItems);
 
   const handleRefreshData = () => {
     fetchData()
   }
-
 
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
@@ -247,7 +234,7 @@ const Pengajuan = () => {
                               </tr>
                             </thead>
                             <tbody>
-                              {currentItems.map((item, index) => (
+                              {filteredData.map((item, index) => (
                                 <tr key={item.ID}>
                                   <td>{index + 1}</td>
                                   <td>{item.NOMOR_SURAT_LENGKAP}</td>
@@ -258,10 +245,8 @@ const Pengajuan = () => {
                                   <td>{item.TANGGAL_ARSIP ? formatDate(item.TANGGAL_ARSIP) : ""}</td>
                                   <td>
                                     <div>
-                                      <Link to={`/detailPengajuan/${item.ID}`}>
-                                        <FontAwesomeIcon icon={faLayerGroup} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px" }} />
-                                      </Link>
-                                      {userLogin === "admin" ? <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(item.ID)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" /> : ""}
+                                      <FontAwesomeIcon icon={faLayerGroup} onClick={() => handleDetail(item.RoleID)} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px", cursor: 'pointer', color: "black" }} />
+                                      <FontAwesomeIcon icon={faTrashCan} onClick={() => handleDelete(item.ID)} style={{ cursor: 'pointer', color: "red" }} data-toggle="tooltip" title="Hapus" data-placement="top" />
                                     </div>
                                   </td>
                                 </tr>
@@ -269,16 +254,17 @@ const Pengajuan = () => {
                             </tbody>
                           </table>
                           {loading && <p>Loading...</p>}
+                          {statusGetData === false ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
                         </div>
                       </div>
                     </div>
 
                     <div className='col-lg-12'>
                       <div className='row'>
-                        <div className='col-lg-2'>
-                          <p style={{ fontSize: "14px" }}>Total Data: {filteredData.length}</p>
+                        <div className='col-lg-3' style={{ marginTop: "10px" }}>
+                          <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{ marginLeft: "10px" }}>({totalData ? totalData : 0} data)</span></p>
                         </div>
-                        <div className='col-lg-2'>
+                        <div className='col-lg-2' style={{ marginTop: "10px" }}>
                           <select
                             id='itemsPerPage'
                             className="form-select form-select-sm"
@@ -286,7 +272,6 @@ const Pengajuan = () => {
                             value={itemsPerPage}
                             onChange={handleChangeItemsPerPage}
                           >
-                            <option value="5">5 baris</option>
                             <option value="10">10 baris</option>
                             <option value="25">25 baris</option>
                             <option value="50">50 baris</option>
@@ -295,15 +280,14 @@ const Pengajuan = () => {
                         </div>
 
 
-                        <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                        <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: "10px" }}>
+                          {/* pagination */}
                           <ReactPaginate
-                            forcePage={Math.min(currentPage, pageCount - 1)}
-                            // forcePage={Math.min(currentPage, Math.max(0, pageCount - 1))}
-                            // forcePage={Math.min(currentPage, Math.max(0, Math.ceil(filteredData.length / itemsPerPage) - 1))}
+                            forcePage={Math.min(currentPage, totalPages - 1)}
                             previousLabel={<FontAwesomeIcon icon={faAngleLeft} />}
                             nextLabel={<FontAwesomeIcon icon={faAngleRight} />}
                             breakLabel={'...'}
-                            pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+                            pageCount={totalPages}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={5}
                             onPageChange={handlePageChange}
@@ -319,10 +303,9 @@ const Pengajuan = () => {
                         </div>
 
                       </div>
+
                     </div>
-
                   </div> {/* end row */}
-
                 </div> {/* end tab pane 1 */}
 
                 <div className="tab-pane fade" id="tab2" role="tabpanel">

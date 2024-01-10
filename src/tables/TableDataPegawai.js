@@ -11,8 +11,9 @@ import ReactPaginate from 'react-paginate';
 
 const TableDataPegawai = () => {
   
+  const [userToken, setUserToken] = useState("");
   const [statusGetData, setStatusGetData] = useState(true);
-  const [dataJabatan, setDataJabatan] = useState(0);
+  // const [dataJabatan, setDataJabatan] = useState(0);
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,6 +30,12 @@ const TableDataPegawai = () => {
   //   return formattedDate;
   // };
 
+  useEffect(() => {
+
+    setUserToken(localStorage.getItem("_aa"))
+    console.log("userToken:", userToken)
+  }, [userToken]);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -41,19 +48,20 @@ const TableDataPegawai = () => {
         params: {
           page: currentPage + 1,
           limit: itemsPerPage,
-          search: searchTerm
+          search: searchTerm,
+          userToken: userToken
         }
       });
 
       const result = response.data;
-      if (result.status) {
+      if (result) {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
         setStatusGetData(true)
 
       } else {
-        console.error(result.status);
+        console.error(result.message);
         setStatusGetData(false)
       }
       setLoading(false);
@@ -62,38 +70,38 @@ const TableDataPegawai = () => {
       setLoading(false);
       setStatusGetData(false)
     }
-  }, [currentPage, itemsPerPage, searchTerm]);
+  }, [currentPage, itemsPerPage, searchTerm, userToken]);
 
-  const fetchDataJabatan = useCallback(async () => {
-    try {
-      setLoading(true);
-      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-      const resultCsrf = getCsrf.data.csrfToken;
+  // const fetchDataJabatan = useCallback(async () => {
+  //   try {
+  //     setLoading(true);
+  //     const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+  //     const resultCsrf = getCsrf.data.csrfToken;
 
-      const response = await axios.get('http://localhost:3001/jabatan', {
-        headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true
-      });
-      const result = response.data;
-      // console.log("result", result)
-      if (result) {
-        setDataJabatan(result.data);
+  //     const response = await axios.get('http://localhost:3001/jabatan', {
+  //       headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+  //       withCredentials: true
+  //     });
+  //     const result = response.data;
+  //     // console.log("result", result)
+  //     if (result) {
+  //       setDataJabatan(result.data);
 
-      } else {
-        console.error(result.status);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
-    }
-  }, []);;
+  //     } else {
+  //       console.error(result.status);
+  //     }
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error('Error fetching data:', error);
+  //     setLoading(false);
+  //   }
+  // }, []);;
 
   useEffect(() => {
     fetchData();
-    fetchDataJabatan();
-    console.log(dataJabatan);
-  }, [fetchData, fetchDataJabatan, dataJabatan]);
+    // fetchDataJabatan();
+    // console.log(dataJabatan);
+  }, [fetchData]);
 
   // pencarian
   // useEffect(() => {
@@ -165,7 +173,8 @@ const TableDataPegawai = () => {
   };
 
   const handleRefreshData = () => {
-    fetchData()
+    setSearchTerm("");
+    fetchData();
   }
 
   return (

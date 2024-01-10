@@ -137,6 +137,7 @@ const TableRole = () => {
 
   const handleRefreshData = () => {
     fetchData();
+    setSearchTerm("");
   }
 
   return (

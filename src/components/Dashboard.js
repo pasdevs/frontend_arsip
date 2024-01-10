@@ -3,9 +3,20 @@ import "../App.css"
 import Sidebar from './Sidebar';
 import DashboardArsipKeluar from './DashboardArsipKeluar';
 import { checkLoginStatus } from '../auth/CheckLogin';
+import Cookies from 'js-cookie';
 
 const Dashboard = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Mendapatkan nilai cookie
+    const cookieValue = Cookies.get('connect.sid');
+    console.log('Nilai dari cookie:', cookieValue);
+    console.log('Nilai dari cookie:', document.cookie);
+
+    console.log("dari local storage:", localStorage.getItem('_aa'))
+    
+  }, []);
 
   // useEffect(() => {
   //   const checkStatus = async () => {
@@ -33,14 +44,13 @@ const Dashboard = () => {
 
   return (
     <div>
-      
-        <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
-          <Sidebar />
-          {/* KONTEN */}
-          <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-            <DashboardArsipKeluar />
-          </div>
+      <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
+        <Sidebar />
+        {/* KONTEN */}
+        <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
+          <DashboardArsipKeluar />
         </div>
+      </div>
     </div>
   );
 };

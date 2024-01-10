@@ -45,14 +45,14 @@ const TableDataLokasiKerja = () => {
       });
 
       const result = response.data;
-      if (result.status) {
+      if (result) {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
         setStatusGetData(true)
 
       } else {
-        console.error(result.status);
+        console.error(result.message);
         setStatusGetData(false)
       }
       setLoading(false);

@@ -63,8 +63,10 @@ const Login = () => {
       );
 
       if (loginResponse.data.status) {
+        localStorage.setItem('_aa', loginResponse.data.token);
         window.location.href = 'http://localhost:3000/dashboard';
         console.log('Data dari server:', loginResponse.data);
+
       } else if (loginResponse.data.status === false) {
         alert(loginResponse.data.message);
       }
