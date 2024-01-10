@@ -11,6 +11,7 @@ import ReactPaginate from 'react-paginate';
 
 const TableRole = () => {
 
+  const [statusGetData, setStatusGetData] = useState(true);
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,14 +49,17 @@ const TableRole = () => {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
+        setStatusGetData(true)
 
       } else {
         console.error(result.status);
+        setStatusGetData(false)
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
+      setStatusGetData(false)
     }
   }, [currentPage, itemsPerPage, searchTerm]);
 
@@ -63,6 +67,7 @@ const TableRole = () => {
     fetchData();
   }, [fetchData]);
 
+  //pencarian
   // useEffect(() => {
   //   const filteredData = data.filter(item =>
   //     Object.values(item).some(value =>
@@ -72,6 +77,7 @@ const TableRole = () => {
   //   setFilteredData(filteredData);
   // }, [searchTerm, data]);
 
+  //delete data
   const deleteData = async (id) => {
     try {
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
@@ -120,21 +126,14 @@ const TableRole = () => {
   };
 
   const handlePageChange = ({ selected }) => {
-    // setCurrentPage(selected);
     setCurrentPage(Math.min(selected, totalPages - 1));
   };
 
   const handleChangeItemsPerPage = (event) => {
-    // setItemsPerPage(event.target.value);
     const newItemsPerPage = parseInt(event.target.value, 10);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(0); // Set halaman kembali ke 0 ketika mengubah itemsPerPage
+    setCurrentPage(0);
   }
-
-  // const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-  // // const indexOfLastItem = (currentPage * itemsPerPage) + itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleRefreshData = () => {
     fetchData();
@@ -219,6 +218,7 @@ const TableRole = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
+                  {statusGetData === false ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>
@@ -226,7 +226,6 @@ const TableRole = () => {
             <div className='col-lg-12'>
               <div className='row'>
                 <div className='col-lg-3' style={{marginTop: "10px"}}>
-                  {/* <p style={{ fontSize: "14px" }}>Total Data: {filteredData.length}</p> */}
                   <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{marginLeft: "10px"}}>({totalData ? totalData : 0 } data)</span></p>
                 </div>
                 <div className='col-lg-2' style={{marginTop: "10px"}}>
@@ -265,7 +264,6 @@ const TableRole = () => {
                     previousLinkClassName={'page-link'} // Bootstrap class
                     nextLinkClassName={'page-link'} // Bootstrap class
                   />
-
                 </div>
 
               </div>
