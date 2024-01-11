@@ -10,10 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 
 const TableDataPegawai = () => {
-  
+
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   const [userToken, setUserToken] = useState("");
-  const [statusGetData, setStatusGetData] = useState(true);
-  // const [dataJabatan, setDataJabatan] = useState(0);
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -24,18 +24,23 @@ const TableDataPegawai = () => {
 
   const navigate = useNavigate();
 
-  // const formatDate = (dateString) => {
-  //   const options = { day: 'numeric', month: 'long', year: 'numeric' };
-  //   const formattedDate = new Date(dateString).toLocaleDateString('id-ID', options);
-  //   return formattedDate;
-  // };
-
   useEffect(() => {
-
     setUserToken(localStorage.getItem("_aa"))
     console.log("userToken:", userToken)
-  }, [userToken]);
+    console.log("filteredData:", filteredData)
+    console.log("filteredDatalength:", filteredData.length)
+  }, [userToken, filteredData]);
 
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 3000);
+  
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
+  
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -48,7 +53,7 @@ const TableDataPegawai = () => {
         params: {
           page: currentPage + 1,
           limit: itemsPerPage,
-          search: searchTerm,
+          search: debouncedSearchTerm,
           userToken: userToken
         }
       });
@@ -58,60 +63,26 @@ const TableDataPegawai = () => {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
-        setStatusGetData(true)
 
       } else {
         console.error(result.message);
-        setStatusGetData(false)
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
-      setStatusGetData(false)
     }
-  }, [currentPage, itemsPerPage, searchTerm, userToken]);
+  }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
 
-  // const fetchDataJabatan = useCallback(async () => {
-  //   try {
-  //     setLoading(true);
-  //     const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-  //     const resultCsrf = getCsrf.data.csrfToken;
-
-  //     const response = await axios.get('http://localhost:3001/jabatan', {
-  //       headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-  //       withCredentials: true
-  //     });
-  //     const result = response.data;
-  //     // console.log("result", result)
-  //     if (result) {
-  //       setDataJabatan(result.data);
-
-  //     } else {
-  //       console.error(result.status);
-  //     }
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //     setLoading(false);
-  //   }
-  // }, []);;
 
   useEffect(() => {
-    fetchData();
-    // fetchDataJabatan();
-    // console.log(dataJabatan);
+    fetchData()
   }, [fetchData]);
 
-  // pencarian
-  // useEffect(() => {
-  //   const filteredData = data.filter(item =>
-  //     Object.values(item).some(value =>
-  //       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-  //     )
-  //   );
-  //   setFilteredData(filteredData);
-  // }, [searchTerm, data]);
+
+  const handleSearch = (e) =>{
+    setSearchTerm(e.target.value);
+  }
 
   //delete data
   const deleteData = async (id) => {
@@ -201,7 +172,7 @@ const TableDataPegawai = () => {
                   <input type='text' className='form-control form-control-sm'
                     placeholder='Cari...'
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearch}
                   />
                 </div>
                 <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
@@ -242,7 +213,8 @@ const TableDataPegawai = () => {
                     <tbody>
                       {filteredData.map((item, index) => (
                         <tr key={item.PegawaiID}>
-                          <td>{index + 1}</td>
+                          <td>{index + 1} </td>
+                          {/* <td>{currentPage === 0 && itemsPerPage === 10 ? index + 1 : index + 11 }</td> */}
                           <td>{item.NIPY}</td>
                           <td>{item.NamaPegawai}</td>
                           <td>{item.Jabatan}</td>
@@ -262,13 +234,13 @@ const TableDataPegawai = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
-                  {statusGetData === false ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
+                  {filteredData.length < 1 ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>
 
             <div className='col-lg-12'>
-            <div className='row'>
+              <div className='row'>
                 <div className='col-lg-3' style={{ marginTop: "10px" }}>
                   <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{ marginLeft: "10px" }}>({totalData ? totalData : 0} data)</span></p>
                 </div>
@@ -288,7 +260,7 @@ const TableDataPegawai = () => {
                 </div>
 
 
-                <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: "10px"}}>
+                <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: "10px" }}>
                   {/* pagination */}
                   <ReactPaginate
                     forcePage={Math.min(currentPage, totalPages - 1)}
@@ -320,5 +292,4 @@ const TableDataPegawai = () => {
     </div>
   )
 }
-
 export default TableDataPegawai

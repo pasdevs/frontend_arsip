@@ -11,7 +11,7 @@ import ReactPaginate from 'react-paginate';
 
 const TableDataKodeSurat = () => {
 
-  const [statusGetData, setStatusGetData] = useState(true);
+  const [userToken, setUserToken] = useState("");
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +28,13 @@ const TableDataKodeSurat = () => {
     return formattedDate;
   };
 
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"))
+    console.log("userToken:", userToken)
+    console.log("filteredData:", filteredData)
+    console.log("filteredDatalength:", filteredData.length)
+  }, [userToken, filteredData]);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -40,7 +47,8 @@ const TableDataKodeSurat = () => {
         params: {
           page: currentPage + 1,
           limit: itemsPerPage,
-          search: searchTerm
+          search: searchTerm,
+          userToken: userToken
         }
       });
 
@@ -49,19 +57,16 @@ const TableDataKodeSurat = () => {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
-        setStatusGetData(true)
 
       } else {
         console.error(result.message);
-        setStatusGetData(false)
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
-      setStatusGetData(false)
     }
-  }, [currentPage, itemsPerPage, searchTerm]);
+  }, [currentPage, itemsPerPage, searchTerm, userToken]);
 
   useEffect(() => {
     fetchData();
@@ -202,7 +207,7 @@ const TableDataKodeSurat = () => {
                       {filteredData.map((item, index) => (
                         <tr key={item.KodeDireksiID}>
                           <td>{index + 1}</td>
-                          <td>{item.KodeDireksi}</td>
+                          <td>{item.KodeSurat}</td>
                           <td>{item.Keterangan}</td>
                           <td>{formatDate(item.TanggalBuat)}</td>
                           <td>{formatDate(item.TanggalUpdate)}</td>
@@ -217,7 +222,7 @@ const TableDataKodeSurat = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
-                  {statusGetData === false ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
+                  {filteredData.length < 1 ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>

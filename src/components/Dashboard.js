@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import "../App.css"
 import Sidebar from './Sidebar';
 import DashboardArsipKeluar from './DashboardArsipKeluar';
-import { checkLoginStatus } from '../auth/CheckLogin';
+// import { checkLoginStatus } from '../auth/CheckLogin';
 import Cookies from 'js-cookie';
 
 const Dashboard = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  // const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     // Mendapatkan nilai cookie

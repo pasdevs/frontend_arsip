@@ -11,7 +11,7 @@ import ReactPaginate from 'react-paginate';
 
 const TableDataLokasiKerja = () => {
 
-  const [statusGetData, setStatusGetData] = useState(true);
+  const [userToken, setUserToken] = useState("");
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,6 +28,13 @@ const TableDataLokasiKerja = () => {
     return formattedDate;
   };
 
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"))
+    console.log("userToken:", userToken)
+    console.log("filteredData:", filteredData)
+    console.log("filteredDatalength:", filteredData.length)
+  }, [userToken, filteredData]);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -40,7 +47,8 @@ const TableDataLokasiKerja = () => {
         params: {
           page: currentPage + 1,
           limit: itemsPerPage,
-          search: searchTerm
+          search: searchTerm,
+          userToken: userToken
         }
       });
 
@@ -49,19 +57,16 @@ const TableDataLokasiKerja = () => {
         setTotalData(result.total);
         setFilteredData(result.data);
         setTotalPages(result.totalPages);
-        setStatusGetData(true)
 
       } else {
         console.error(result.message);
-        setStatusGetData(false)
       }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
-      setStatusGetData(false)
     }
-  }, [currentPage, itemsPerPage, searchTerm]);
+  }, [currentPage, itemsPerPage, searchTerm, userToken]);
 
   useEffect(() => {
     fetchData();
@@ -217,7 +222,7 @@ const TableDataLokasiKerja = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
-                  {statusGetData === false ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
+                  {filteredData.length < 1 ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>
