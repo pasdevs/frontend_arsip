@@ -11,7 +11,10 @@ import ReactPaginate from 'react-paginate';
 
 const TableRole = () => {
 
-  const [userToken, setUserToken] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
+  // const [userToken, setUserToken] = useState("");
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,11 +32,18 @@ const TableRole = () => {
   };
 
   useEffect(() => {
-    setUserToken(localStorage.getItem("_aa"))
+    setUserToken(localStorage.getItem("_aa"));
     console.log("userToken:", userToken)
-    console.log("filteredData:", filteredData)
-    console.log("filteredDatalength:", filteredData.length)
-  }, [userToken, filteredData]);
+  }, [userToken]);
+
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 3000);
+  
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -47,7 +57,7 @@ const TableRole = () => {
         params: {
           page: currentPage + 1,
           limit: itemsPerPage,
-          search: searchTerm,
+          search: debouncedSearchTerm,
           userToken: userToken
         }
       });
@@ -66,11 +76,15 @@ const TableRole = () => {
       console.error('Error fetching data:', error);
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, searchTerm, userToken]);
+  }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleSearch = (e) =>{
+    setSearchTerm(e.target.value);
+  }
 
   //pencarian
   // useEffect(() => {
@@ -90,7 +104,10 @@ const TableRole = () => {
 
       const response = await axios.delete(`http://localhost:3001/role/${id}`, {
         headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true
+        withCredentials: true,
+        params: {
+          userToken: userToken
+        }
       });
 
       const result = response.data;
@@ -169,7 +186,7 @@ const TableRole = () => {
                   <input type='text' className='form-control form-control-sm'
                     placeholder='Cari...'
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearch}
                   />
                 </div>
                 <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>

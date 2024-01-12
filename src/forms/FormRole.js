@@ -6,22 +6,36 @@ import Sidebar from '../components/Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import Joi from 'joi';
 
 const FormRole = () => {
+
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
+  // const [userToken, setUserToken] = useState("");
   const [role, setRole] = useState("");
   const [keterangan, setKeterangan] = useState("");
+  const [roleError, setRoleError] = useState("");
+  const [keteranganError, setKeteranganError] = useState("");
 
-  const [isFormValid, setIsFormValid] = useState(true);
+  // const [isFormValid, setIsFormValid] = useState(true);
+
+  // const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i
+
+
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"));
+    console.log("userToken:", userToken)
+  }, [userToken]);
 
 
   const handleChangeRole = (event) => {
     setRole(event.target.value);
-    console.log(event.target.value)
+    setRoleError("");
   };
 
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
-    console.log(event.target.value)
+    setKeteranganError("");
   };
 
   // useEffect untuk memantau perubahan pada state
@@ -33,59 +47,103 @@ const FormRole = () => {
 
   }, [role, keterangan]);
 
+  const validateForm = () => {
+    const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i;
+
+    const schema = Joi.object({
+      role: Joi.string().alphanum().min(3).max(30).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Role harus diisi.',
+        'string.alphanum': 'Input harus berupa alfanumerik',
+        'string.pattern.invert.base': 'JANGAN GITU OM...',
+        'string.min': 'Role harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+      keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Keterangan harus diisi.',
+        'string.pattern.invert.base': 'JANGAN GITU OM...',
+        'string.min': 'Keterangan harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+    });
+  
+    const { error } = schema.validate({ role, keterangan }, { abortEarly: false });
+
+    if (error) {
+      error.details.forEach((err) => {
+        const fieldName = err.path[0];
+        const errorMessage = err.message;
+  
+        if (fieldName === 'role') {
+          setRoleError(errorMessage);
+        } else if (fieldName === 'keterangan') {
+          setKeteranganError(errorMessage);
+        }
+      });
+      return false;
+    }
+  
+    return true;
+  };
+
   const handleSimpanClickk = async () => {
     try {
-      if (!role || !keterangan) {
-        setIsFormValid(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Silakan isi role dan keterangan!',
-          confirmButtonColor: '#198754'
-        });
-        return;
-      }
-      setIsFormValid(true);
+      // if (!role || !keterangan) {
+      //   setIsFormValid(false);
+      //   Swal.fire({
+      //     icon: 'error',
+      //     title: 'Silakan isi role dan keterangan!',
+      //     confirmButtonColor: '#198754'
+      //   });
+      //   return;
+      // }
+      // setIsFormValid(true);
 
-      // Mengambil CSRF token
-      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-      const resultCsrf = getCsrf.data.csrfToken;
-      
-      // create data
-      const addRole = await axios.post("http://localhost:3001/role",
-        {
-          Role: role,
-          Keterangan: keterangan
-        },
-        {
-          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-          withCredentials: true
+      if (validateForm()) {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        // create data
+        const addRole = await axios.post("http://localhost:3001/role",
+          {
+            Role: role,
+            Keterangan: keterangan,
+            Token: userToken,
+          },
+          {
+            headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },
+
+        );
+
+        if (addRole) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil menambahkan role!',
+            confirmButtonColor: '#198754'
+          });
+          window.location.href = 'http://localhost:3000/role';
+          // console.log('Data dari server:', addRole.data);
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal menambahkan role!',
+            confirmButtonColor: '#198754'
+          });
+          console.error('Gagal menambahkan role!');
         }
-      );
-  
-      if (addRole) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil menambahkan role!',
-          confirmButtonColor: '#198754'
-        });
-        window.location.href = 'http://localhost:3000/role';
-        // console.log('Data dari server:', addRole.data);
-
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal menambahkan role!',
-          confirmButtonColor: '#198754'
-        });
-        console.error('Gagal menambahkan role!');
       }
+
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Terjadi kesalahan saat menambahkan role!',
+        // title: 'Terjadi kesalahan saat menambahkan role!',
+        title: error.response.data.message,
         confirmButtonColor: '#198754'
       });
-      console.error('Terjadi kesalahan saat menambahkan role!', error);
+      console.error(error.response.data.message);
     }
 
   };
@@ -114,12 +172,13 @@ const FormRole = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${roleError && 'is-invalid'}`}
                       id="role"
                       placeholder="Role User"
                       value={role}
                       onChange={handleChangeRole}
                     />
+                    {roleError && <div className="invalid-feedback">{roleError}</div>}
                   </div>
                 </div>
               </div>
@@ -127,21 +186,29 @@ const FormRole = () => {
               <div className='col-lg-12'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
-                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='Tambahan...'></textarea>
+                  <textarea
+                    className={`form-control form-control-sm ${keteranganError && 'is-invalid'}`}
+                    id="keterangan"
+                    rows="3"
+                    value={keterangan}
+                    onChange={handleChangeKeterangan}
+                    placeholder='Tambahan...'>
+                  </textarea>
+                  {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
               </div>
 
               {/* alert jika belum terisi semua */}
-              <div className='col-lg-6'>
+              {/* <div className='col-lg-6'>
 
               </div>
               <div className='col-lg-6'>
                 <div className='mb-3'>
                   {
-                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input!</p>
+                    (!roleError && !keteranganError) && <p style={{ color: 'red' }}>Silakan isi semua input!</p>
                   }
                 </div>
-              </div>
+              </div> */}
 
               {/* baris kelima */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
