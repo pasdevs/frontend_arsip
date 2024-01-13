@@ -12,9 +12,7 @@ import ReactPaginate from 'react-paginate';
 const TableRole = () => {
 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-
   const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
-  // const [userToken, setUserToken] = useState("");
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,69 +30,67 @@ const TableRole = () => {
   };
 
   useEffect(() => {
-    setUserToken(localStorage.getItem("_aa"));
-    console.log("userToken:", userToken)
+    setUserToken(localStorage.getItem("_aa") || "");
   }, [userToken]);
-
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 3000);
-  
+
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
   const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-      const resultCsrf = getCsrf.data.csrfToken;
+    if (userToken !== "") {
+      try {
+        setLoading(true);
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
 
-      const response = await axios.get('http://localhost:3001/role', {
-        headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true,
-        params: {
-          page: currentPage + 1,
-          limit: itemsPerPage,
-          search: debouncedSearchTerm,
-          userToken: userToken
+        const response = await axios.get('http://localhost:3001/role', {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true,
+          params: {
+            page: currentPage + 1,
+            limit: itemsPerPage,
+            search: debouncedSearchTerm,
+            userToken: userToken
+          }
+        });
+
+        if (response.data.status) {
+          setTotalData(response.data.total);
+          setFilteredData(response.data.data);
+          setTotalPages(response.data.totalPages);
+
         }
-      });
+        setLoading(false);
 
-      const result = response.data;
-      if (result.status) {
-        setTotalData(result.total);
-        setFilteredData(result.data);
-        setTotalPages(result.totalPages);
-
-      } else {
-        console.error(result.status);
+      } catch (error) {
+        setLoading(false);
+        if (error.response.status === 400) {
+          console.log("message:", error.response.data.message);
+          // window.location.href = 'http://localhost:3000/login';
+        } else {
+          console.error('Error fetching data:', error);
+        }
       }
+    } else {
       setLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
+      console.log('No credentials provided, please try again ^_^');
+      // window.location.href = 'http://localhost:3000/login';
     }
+
   }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const handleSearch = (e) =>{
+  const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   }
-
-  //pencarian
-  // useEffect(() => {
-  //   const filteredData = data.filter(item =>
-  //     Object.values(item).some(value =>
-  //       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-  //     )
-  //   );
-  //   setFilteredData(filteredData);
-  // }, [searchTerm, data]);
 
   //delete data
   const deleteData = async (id) => {
@@ -241,17 +237,17 @@ const TableRole = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
-                  {filteredData.length < 1 ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
+                  {filteredData.length < 1 ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>
 
             <div className='col-lg-12'>
               <div className='row'>
-                <div className='col-lg-3' style={{marginTop: "10px"}}>
-                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{marginLeft: "10px"}}>({totalData ? totalData : 0 } data)</span></p>
+                <div className='col-lg-3' style={{ marginTop: "10px" }}>
+                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{ marginLeft: "10px" }}>({totalData ? totalData : 0} data)</span></p>
                 </div>
-                <div className='col-lg-2' style={{marginTop: "10px"}}>
+                <div className='col-lg-2' style={{ marginTop: "10px" }}>
                   <select
                     id='itemsPerPage'
                     className="form-select form-select-sm"
@@ -266,7 +262,6 @@ const TableRole = () => {
                   </select>
                 </div>
 
-
                 <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: "10px" }}>
                   {/* pagination */}
                   <ReactPaginate
@@ -278,21 +273,20 @@ const TableRole = () => {
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePageChange}
-                    containerClassName={'pagination justify-content-center'} // Bootstrap class
+                    containerClassName={'pagination justify-content-center'}
                     activeClassName={'active'}
-                    pageClassName={'page-item'} // Bootstrap class
-                    previousClassName={'page-item'} // Bootstrap class
-                    nextClassName={'page-item'} // Bootstrap class
-                    pageLinkClassName={'page-link'} // Bootstrap class
-                    previousLinkClassName={'page-link'} // Bootstrap class
-                    nextLinkClassName={'page-link'} // Bootstrap class
+                    pageClassName={'page-item'}
+                    previousClassName={'page-item'}
+                    nextClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                    previousLinkClassName={'page-link'}
+                    nextLinkClassName={'page-link'}
                   />
                 </div>
 
               </div>
             </div>
           </div>
-
 
         </div>
       </div>
