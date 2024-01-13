@@ -3,19 +3,21 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 const DetailRole = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [role, setRole] = useState("");
   const [keterangan, setKeterangan] = useState("");
 
   const [isFormValid, setIsFormValid] = useState(true);
 
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa") || "");
+  }, [userToken]);
 
   const handleChangeRole = (event) => {
     setRole(event.target.value);
@@ -45,7 +47,10 @@ const DetailRole = () => {
 
         const response = await axios.get(`http://localhost:3001/role/${id}`, {
           headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-          withCredentials: true
+          withCredentials: true,
+          params: {
+            userToken: userToken
+          }
         });
         const result = response.data;
         console.log("result status:", result.status)
@@ -64,7 +69,7 @@ const DetailRole = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, userToken]);
 
   const handleUpdateClickk = async () => {
     try {
@@ -87,7 +92,8 @@ const DetailRole = () => {
       const updateRole = await axios.patch(`http://localhost:3001/role/${id}`,
         {
           Role: role,
-          Keterangan: keterangan
+          Keterangan: keterangan,
+          Token: userToken,
         },
         {
           headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },

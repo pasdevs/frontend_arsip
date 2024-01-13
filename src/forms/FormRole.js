@@ -11,16 +11,10 @@ import Joi from 'joi';
 const FormRole = () => {
 
   const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
-  // const [userToken, setUserToken] = useState("");
   const [role, setRole] = useState("");
   const [keterangan, setKeterangan] = useState("");
   const [roleError, setRoleError] = useState("");
   const [keteranganError, setKeteranganError] = useState("");
-
-  // const [isFormValid, setIsFormValid] = useState(true);
-
-  // const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i
-
 
   useEffect(() => {
     setUserToken(localStorage.getItem("_aa"));
@@ -81,7 +75,6 @@ const FormRole = () => {
       });
       return false;
     }
-  
     return true;
   };
 
@@ -197,18 +190,6 @@ const FormRole = () => {
                   {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
               </div>
-
-              {/* alert jika belum terisi semua */}
-              {/* <div className='col-lg-6'>
-
-              </div>
-              <div className='col-lg-6'>
-                <div className='mb-3'>
-                  {
-                    (!roleError && !keteranganError) && <p style={{ color: 'red' }}>Silakan isi semua input!</p>
-                  }
-                </div>
-              </div> */}
 
               {/* baris kelima */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
