@@ -7,6 +7,9 @@ import Sidebar from '../components/Sidebar';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import Joi from 'joi';
+import 'select2/dist/css/select2.min.css';
+import 'select2/dist/js/select2.full.js';
+import $ from 'jquery';
 
 const FormRole = () => {
 
@@ -20,6 +23,12 @@ const FormRole = () => {
     setUserToken(localStorage.getItem("_aa"));
     console.log("userToken:", userToken)
   }, [userToken]);
+
+
+  useEffect(() => {
+    // Inisialisasi Select2 pada elemen dengan ID atau kelas tertentu
+    $('#yourSelectElement').select2();
+  }, []);
 
 
   const handleChangeRole = (event) => {
@@ -59,14 +68,14 @@ const FormRole = () => {
         'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
       }),
     });
-  
+
     const { error } = schema.validate({ role, keterangan }, { abortEarly: false });
 
     if (error) {
       error.details.forEach((err) => {
         const fieldName = err.path[0];
         const errorMessage = err.message;
-  
+
         if (fieldName === 'role') {
           setRoleError(errorMessage);
         } else if (fieldName === 'keterangan') {
@@ -189,6 +198,18 @@ const FormRole = () => {
                   </textarea>
                   {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
+              </div>
+
+              <div className="col-12 col-sm-12" style={{ marginBottom: "20px" }}>
+                <select id="yourSelectElement" className="form-select form-select-sm" aria-label="Select an option">
+                  <option value="">Kode Direksi</option>
+                  <option value="Unpas.R">Rektor</option>
+                  <option value="Unpas.R1">Wakil Rektor Belmawabud</option>
+                  <option value="Unpas.R2">Wakil Rektor Keuangan</option>
+                  <option value="Unpas.R3">Wakil Rektor Inovasi</option>
+                  <option value="Unpas.R5">Kepala Biro</option>
+                  <option value="Unpas.R7">Kepala Lembaga</option>
+                </select>
               </div>
 
               {/* baris kelima */}
