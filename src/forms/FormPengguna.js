@@ -176,17 +176,19 @@ const FormPengguna = () => {
                 <div className="mb-3">
                   <label htmlFor="username" className="form-label" style={{ fontSize: "small" }}>Status</label>
                   <div className="form-control form-control-sm">
+                    <span className="badge text-bg-info cursor-change"
+                      onClick={handleClickStatusAktif} style={{ border: status === 'Aktif' ? '3px solid blue' : 'none', marginRight: "10px" }}>Aktif
+                    </span>
                     <span className="badge text-bg-danger cursor-change"
-                      onClick={handleClickStatusNonAktif} style={{ border: status === 'Non Aktif' ? '3px solid red' : 'none', marginRight: "10px" }}>Non Aktif</span>
-                    <span className="badge text-bg-primary cursor-change"
-                      onClick={handleClickStatusAktif} style={{ border: status === 'Aktif' ? '3px solid blue' : 'none' }}>Aktif</span>
+                      onClick={handleClickStatusNonAktif} style={{ border: status === 'Non Aktif' ? '3px solid red' : 'none' }}>Non Aktif
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* baris keempat */}
               <div className='col-lg-6'>
-              
+
               </div>
               <div className='col-lg-6'>
                 <div className="mb-3">

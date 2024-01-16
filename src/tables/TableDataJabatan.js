@@ -11,7 +11,8 @@ import ReactPaginate from 'react-paginate';
 
 const TableDataJabatan = () => {
 
-  const [userToken, setUserToken] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [totalData, setTotalData] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,81 +23,92 @@ const TableDataJabatan = () => {
 
   const navigate = useNavigate();
 
-  const formatDate = (dateString) => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('id-ID', options);
-    return formattedDate;
-  };
+  // const formatDate = (dateString) => {
+  //   const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  //   const formattedDate = new Date(dateString).toLocaleDateString('id-ID', options);
+  //   return formattedDate;
+  // };
 
   useEffect(() => {
     setUserToken(localStorage.getItem("_aa"))
-    console.log("userToken:", userToken)
-    console.log("filteredData:", filteredData)
-    console.log("filteredDatalength:", filteredData.length)
-  }, [userToken, filteredData]);
+  }, [userToken]);
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 2000);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
 
   const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-      const resultCsrf = getCsrf.data.csrfToken;
+    if (userToken !== "") {
+      try {
+        setLoading(true);
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
 
-      const response = await axios.get('http://localhost:3001/jabatan', {
-        headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true,
-        params: {
-          page: currentPage + 1,
-          limit: itemsPerPage,
-          search: searchTerm,
-          userToken: userToken
+        const response = await axios.get('http://localhost:3001/jabatan', {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true,
+          params: {
+            page: currentPage + 1,
+            limit: itemsPerPage,
+            search: debouncedSearchTerm,
+            userToken: userToken
+          }
+        });
+
+        if (response.data.status) {
+          setTotalData(response.data.total);
+          setFilteredData(response.data.data);
+          setTotalPages(response.data.totalPages);
+
         }
-      });
+        setLoading(false);
 
-      const result = response.data;
-      if (result) {
-        setTotalData(result.total);
-        setFilteredData(result.data);
-        setTotalPages(result.totalPages);
-
-      } else {
-        console.error(result.message);
+      } catch (error) {
+        setLoading(false);
+        if (error.response.status === 400) {
+          console.log("message:", error.response.data.message);
+          window.location.href = 'http://localhost:3000/login';
+        } else {
+          console.error('Error fetching data:', error);
+        }
       }
+    } else {
       setLoading(false);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
+      console.log('No credentials provided, please try again ^_^');
+      window.location.href = 'http://localhost:3000/login';
     }
-  }, [currentPage, itemsPerPage, searchTerm, userToken]);
+
+  }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // pencarian
-  // useEffect(() => {
-  //   const filteredData = data.filter(item =>
-  //     Object.values(item).some(value =>
-  //       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-  //     )
-  //   );
-  //   setFilteredData(filteredData);
-  // }, [searchTerm, data]);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  }
 
   //delete data
   const deleteData = async (id) => {
     try {
-      // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
 
       const response = await axios.delete(`http://localhost:3001/jabatan/${id}`, {
         headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-        withCredentials: true
+        withCredentials: true,
+        params: {
+          userToken: userToken
+        }
       });
 
       const result = response.data;
 
-      if (result) {
+      if (result.status) {
         console.log('Data berhasil dihapus');
         fetchData();
         Swal.fire({
@@ -105,10 +117,18 @@ const TableDataJabatan = () => {
           confirmButtonColor: '#198754'
         });
       } else {
-        console.error(result.error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal menghapus data!',
+          confirmButtonColor: '#198754'
+        });
       }
     } catch (error) {
-      console.error('Terjadi kesalahan:', error);
+      Swal.fire({
+        icon: 'error',
+        title: error.response.data.message,
+        confirmButtonColor: '#198754'
+      });
     }
   };
 
@@ -143,6 +163,8 @@ const TableDataJabatan = () => {
 
   const handleRefreshData = () => {
     fetchData()
+    setSearchTerm("");
+    setItemsPerPage(10);
   }
 
   return (
@@ -169,7 +191,7 @@ const TableDataJabatan = () => {
                   <input type='text' className='form-control form-control-sm'
                     placeholder='Cari...'
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleSearch}
                   />
                 </div>
                 <div className='col' style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
@@ -198,19 +220,15 @@ const TableDataJabatan = () => {
                         <th>No</th>
                         <th>Jabatan</th>
                         <th>Keterangan</th>
-                        <th>Tanggal Buat</th>
-                        <th>Tanggal Update</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredData.map((item, index) => (
                         <tr key={item.JabatanID}>
-                          <td>{index + 1}</td>
+                          <td>{(currentPage) * itemsPerPage + index + 1}</td>
                           <td>{item.Jabatan}</td>
                           <td>{item.Keterangan}</td>
-                          <td>{formatDate(item.TanggalBuat)}</td>
-                          <td>{formatDate(item.TanggalUpdate)}</td>
                           <td>
                             <div>
                               <FontAwesomeIcon icon={faLayerGroup} onClick={() => handleDetail(item.JabatanID)} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px", cursor: 'pointer', color: "black" }} />
@@ -222,17 +240,17 @@ const TableDataJabatan = () => {
                     </tbody>
                   </table>
                   {loading && <p>Loading...</p>}
-                  {filteredData.length < 1 ? <p style={{textAlign: "center", marginTop: "10px"}}>Tidak ada data untuk ditampilkan</p> : ""}
+                  {filteredData.length < 1 ? <p style={{ textAlign: "center", marginTop: "10px" }}>Tidak ada data untuk ditampilkan</p> : ""}
                 </div>
               </div>
             </div>
 
             <div className='col-lg-12'>
-            <div className='row'>
-                <div className='col-lg-3' style={{marginTop: "10px"}}>
-                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{marginLeft: "10px"}}>({totalData ? totalData : 0 } data)</span></p>
+              <div className='row'>
+                <div className='col-lg-3' style={{ marginTop: "10px" }}>
+                  <p style={{ fontSize: "14px" }}>Hal {currentPage + 1}/{totalPages ? totalPages : totalPages + 1} <span style={{ marginLeft: "10px" }}>({totalData ? totalData : 0} data)</span></p>
                 </div>
-                <div className='col-lg-2' style={{marginTop: "10px"}}>
+                <div className='col-lg-2' style={{ marginTop: "10px" }}>
                   <select
                     id='itemsPerPage'
                     className="form-select form-select-sm"
