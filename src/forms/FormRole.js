@@ -3,8 +3,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import Joi from 'joi';
 import 'select2/dist/css/select2.min.css';
@@ -21,12 +19,11 @@ const FormRole = () => {
 
   useEffect(() => {
     setUserToken(localStorage.getItem("_aa"));
-    console.log("userToken:", userToken)
+    // console.log("userToken:", userToken)
   }, [userToken]);
 
 
   useEffect(() => {
-    // Inisialisasi Select2 pada elemen dengan ID atau kelas tertentu
     $('#yourSelectElement').select2();
   }, []);
 
@@ -41,29 +38,20 @@ const FormRole = () => {
     setKeteranganError("");
   };
 
-  // useEffect untuk memantau perubahan pada state
-  useEffect(() => {
-
-    // cek log data
-    console.log("Role:", role)
-    console.log("Keterangan:", keterangan)
-
-  }, [role, keterangan]);
-
   const validateForm = () => {
     const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i;
 
     const schema = Joi.object({
-      role: Joi.string().alphanum().min(3).max(30).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+      role: Joi.string().min(3).max(30).pattern(/^[^_\s]*(_[^_\s]*)*$/).pattern(sqlInjectionPattern, { invert: true }).required().messages({
         'string.empty': 'Role harus diisi.',
-        'string.alphanum': 'Input harus berupa alfanumerik',
-        'string.pattern.invert.base': 'JANGAN GITU OM...',
+        'string.pattern.base': 'Role tidak boleh mengandung spasi dan hanya boleh menggunakan underscore.',
+        'string.pattern.invert.base': 'Input tidak valid',
         'string.min': 'Role harus memiliki panjang setidaknya {#limit} karakter.',
         'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
       }),
       keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
         'string.empty': 'Keterangan harus diisi.',
-        'string.pattern.invert.base': 'JANGAN GITU OM...',
+        'string.pattern.invert.base': 'Input tidak valid',
         'string.min': 'Keterangan harus memiliki panjang setidaknya {#limit} karakter.',
         'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
       }),
@@ -89,24 +77,13 @@ const FormRole = () => {
 
   const handleSimpanClickk = async () => {
     try {
-      // if (!role || !keterangan) {
-      //   setIsFormValid(false);
-      //   Swal.fire({
-      //     icon: 'error',
-      //     title: 'Silakan isi role dan keterangan!',
-      //     confirmButtonColor: '#198754'
-      //   });
-      //   return;
-      // }
-      // setIsFormValid(true);
-
       if (validateForm()) {
         // Mengambil CSRF token
         const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
         const resultCsrf = getCsrf.data.csrfToken;
 
         // create data
-        const addRole = await axios.post("http://localhost:3001/role",
+        const response = await axios.post("http://localhost:3001/role",
           {
             Role: role,
             Keterangan: keterangan,
@@ -119,14 +96,13 @@ const FormRole = () => {
 
         );
 
-        if (addRole) {
+        if (response) {
           Swal.fire({
             icon: 'success',
             title: 'Berhasil menambahkan role!',
             confirmButtonColor: '#198754'
           });
           window.location.href = 'http://localhost:3000/role';
-          // console.log('Data dari server:', addRole.data);
 
         } else {
           Swal.fire({
@@ -141,7 +117,6 @@ const FormRole = () => {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        // title: 'Terjadi kesalahan saat menambahkan role!',
         title: error.response.data.message,
         confirmButtonColor: '#198754'
       });
@@ -184,6 +159,7 @@ const FormRole = () => {
                   </div>
                 </div>
               </div>
+
               {/* baris kedua */}
               <div className='col-lg-12'>
                 <div className="mb-3">
@@ -212,7 +188,7 @@ const FormRole = () => {
                 </select>
               </div>
 
-              {/* baris kelima */}
+              {/* baris ketiga */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
                   <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>

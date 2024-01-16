@@ -23,11 +23,11 @@ const TableRole = () => {
 
   const navigate = useNavigate();
 
-  const formatDate = (dateString) => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
-    const formattedDate = new Date(dateString).toLocaleDateString('id-ID', options);
-    return formattedDate;
-  };
+  // const formatDate = (dateString) => {
+  //   const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  //   const formattedDate = new Date(dateString).toLocaleDateString('id-ID', options);
+  //   return formattedDate;
+  // };
 
   useEffect(() => {
     setUserToken(localStorage.getItem("_aa") || "");
@@ -36,7 +36,7 @@ const TableRole = () => {
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
@@ -71,7 +71,7 @@ const TableRole = () => {
         setLoading(false);
         if (error.response.status === 400) {
           console.log("message:", error.response.data.message);
-          // window.location.href = 'http://localhost:3000/login';
+          window.location.href = 'http://localhost:3000/login';
         } else {
           console.error('Error fetching data:', error);
         }
@@ -79,7 +79,7 @@ const TableRole = () => {
     } else {
       setLoading(false);
       console.log('No credentials provided, please try again ^_^');
-      // window.location.href = 'http://localhost:3000/login';
+      window.location.href = 'http://localhost:3000/login';
     }
 
   }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
@@ -117,10 +117,18 @@ const TableRole = () => {
           confirmButtonColor: '#198754'
         });
       } else {
-        console.error(result.error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal menghapus data!',
+          confirmButtonColor: '#198754'
+        });
       }
     } catch (error) {
-      console.error('Terjadi kesalahan:', error);
+      Swal.fire({
+        icon: 'error',
+        title: error.response.data.message,
+        confirmButtonColor: '#198754'
+      });
     }
   };
 
@@ -156,6 +164,7 @@ const TableRole = () => {
   const handleRefreshData = () => {
     fetchData();
     setSearchTerm("");
+    setItemsPerPage(10);
   }
 
   return (
@@ -208,24 +217,18 @@ const TableRole = () => {
                   <table className="table table-bordered table-hover text-nowrap table-sm" style={{ marginBottom: "0px", fontSize: "14px" }}>
                     <thead>
                       <tr>
-                        <th>ID</th>
                         <th>No</th>
                         <th>Role</th>
                         <th>Keterangan</th>
-                        <th>Tanggal Buat</th>
-                        <th>Tanggal Update</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredData.map((item, index) => (
                         <tr key={item.RoleID}>
-                          <td>{item.RoleID}</td>
-                          <td>{index + 1}</td>
+                          <td>{(currentPage) * itemsPerPage + index + 1}</td>
                           <td>{item.Role}</td>
                           <td>{item.Keterangan}</td>
-                          <td>{formatDate(item.TanggalBuat)}</td>
-                          <td>{formatDate(item.TanggalUpdate)}</td>
                           <td>
                             <div>
                               <FontAwesomeIcon icon={faLayerGroup} onClick={() => handleDetail(item.RoleID)} data-toggle="tooltip" title="Detail" data-placement="top" style={{ marginRight: "10px", cursor: 'pointer', color: "black" }} />
