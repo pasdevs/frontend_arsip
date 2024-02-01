@@ -3,91 +3,114 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import Joi from 'joi';
 
 const FormDataJabatan = () => {
+
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [jabatan, setJabatanPegawai] = useState("");
   const [keterangan, setKeterangan] = useState("");
+  const [jabatanError, setJabatanError] = useState("");
+  const [keteranganError, setKeteranganError] = useState("");
 
-  const [isFormValid, setIsFormValid] = useState(true);
-
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"));
+    // console.log("userToken:", userToken)
+  }, [userToken]);
 
   const handleChangeJabatanPegawai = (event) => {
     setJabatanPegawai(event.target.value);
-    console.log(event.target.value)
+    setJabatanError("");
   };
 
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
-    console.log(event.target.value)
+    setKeteranganError("");
   };
 
-  // useEffect untuk memantau perubahan pada state
-  useEffect(() => {
+  const validateForm = () => {
+    const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i;
 
-    // cek log data
-    console.log("Jabatan Pegawai:", jabatan)
-    console.log("Keterangan:", keterangan)
+    const schema = Joi.object({
+      jabatan: Joi.string().min(3).max(30).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Jabatan harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Jabatan harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Jabatan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+      keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Keterangan harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Keterangan harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+    });
 
-  }, [jabatan, keterangan]);
+    const { error } = schema.validate({ jabatan, keterangan }, { abortEarly: false });
+
+    if (error) {
+      error.details.forEach((err) => {
+        const fieldName = err.path[0];
+        const errorMessage = err.message;
+
+        if (fieldName === 'jabatan') {
+          setJabatanError(errorMessage);
+        } else if (fieldName === 'keterangan') {
+          setKeteranganError(errorMessage);
+        }
+      });
+      return false;
+    }
+    return true;
+  };
 
   const handleSimpanClickk = async (event) => {
-    // alert("Button Simpan Clicked");
-
     try {
-      if (!jabatan || !keterangan) {
-        setIsFormValid(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Silakan isi jabatan dan keterangan!',
-          confirmButtonColor: '#198754'
-        });
-        return;
-      }
-      setIsFormValid(true);
+      if (validateForm()) {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
 
-      // Mengambil CSRF token
-      const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
-      const resultCsrf = getCsrf.data.csrfToken;
-      
-      // create data
-      const addJabatan = await axios.post("http://localhost:3001/jabatan",
-        {
-          Jabatan: jabatan,
-          Keterangan: keterangan
-        },
-        {
-          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-          withCredentials: true
+        // create data
+        const response = await axios.post("http://localhost:3001/jabatan",
+          {
+            Jabatan: jabatan,
+            Keterangan: keterangan,
+            Token: userToken,
+          },
+          {
+            headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },
+
+        );
+
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil menambahkan jabatan!',
+            confirmButtonColor: '#198754'
+          });
+          window.location.href = 'http://localhost:3000/jabatan';
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal menambahkan jabatan!',
+            confirmButtonColor: '#198754'
+          });
+          console.error('Gagal menambahkan jabatan!');
         }
-      );
-  
-      if (addJabatan) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Berhasil menambahkan jabatan!',
-          confirmButtonColor: '#198754'
-        });
-        window.location.href = 'http://localhost:3000/dataJabatan';
-        // console.log('Data dari server:', addRole.data);
-
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Gagal menambahkan role!',
-          confirmButtonColor: '#198754'
-        });
-        console.error('Gagal menambahkan jabatan!');
       }
+
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Terjadi kesalahan saat menambahkan jabatan!',
+        title: error.response.data.message,
         confirmButtonColor: '#198754'
       });
-      console.error('Terjadi kesalahan saat menambahkan jabatan!', error);
+      console.error(error.response.data.message);
     }
   };
 
@@ -115,12 +138,13 @@ const FormDataJabatan = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${jabatanError && 'is-invalid'}`}
                       id="jabatan"
                       placeholder="Jabatan Pegawai"
                       value={jabatan}
                       onChange={handleChangeJabatanPegawai}
                     />
+                    {jabatanError && <div className="invalid-feedback">{jabatanError}</div>}
                   </div>
                 </div>
               </div>
@@ -128,23 +152,19 @@ const FormDataJabatan = () => {
               <div className='col-lg-12'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
-                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='Tambahan...'></textarea>
+                  <textarea
+                    className={`form-control form-control-sm ${keteranganError && 'is-invalid'}`}
+                    id="keterangan"
+                    rows="3"
+                    value={keterangan}
+                    onChange={handleChangeKeterangan}
+                    placeholder='Tambahan...'>
+                  </textarea>
+                  {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
               </div>
 
-              {/* alert jika belum terisi semua */}
-              <div className='col-lg-6'>
-                {/* <p style={{ display: "none" }}>Nomor terakhir untuk kode surat {kodeSurat} : {lastNumber}</p> */}
-              </div>
-              <div className='col-lg-6'>
-                <div className='mb-3'>
-                  {
-                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input!</p>
-                  }
-                </div>
-              </div>
-
-              {/* baris kelima */}
+              {/* baris ketiga */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
                   <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>

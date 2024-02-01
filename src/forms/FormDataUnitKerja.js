@@ -1,40 +1,117 @@
 import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import Swal from 'sweetalert2';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import Joi from 'joi';
 
 const FormDataUnitKerja = () => {
+
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [unitKerjaPegawai, setUnitKerjaPegawai] = useState("");
   const [keterangan, setKeterangan] = useState("");
+  const [unitKerjaError, setUnitKerjaError] = useState("");
+  const [keteranganError, setKeteranganError] = useState("");
 
-  // const [isFormValid, setIsFormValid] = useState(true);
-
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"));
+    // console.log("userToken:", userToken)
+  }, [userToken]);
 
   const handleChangeUnitKerjaPegawai = (event) => {
     setUnitKerjaPegawai(event.target.value);
-    console.log(event.target.value)
+    setUnitKerjaError("");
   };
 
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
-    console.log(event.target.value)
+    setKeteranganError("");
   };
 
-  // useEffect untuk memantau perubahan pada state
-  useEffect(() => {
+  const validateForm = () => {
+    const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i;
 
-    // cek log data
-    console.log("Unit Kerja Pegawai:", unitKerjaPegawai)
-    console.log("Keterangan:", keterangan)
+    const schema = Joi.object({
+      unitKerjaPegawai: Joi.string().min(3).max(30).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Unit Kerja harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Unit Kerja harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Unit Kerja harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+      keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Keterangan harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Keterangan harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+    });
 
-  }, [unitKerjaPegawai, keterangan]);
+    const { error } = schema.validate({ unitKerjaPegawai, keterangan }, { abortEarly: false });
 
-  const handleSimpanClickk = (event) => {
-    alert("Button Simpan Clicked");
+    if (error) {
+      error.details.forEach((err) => {
+        const fieldName = err.path[0];
+        const errorMessage = err.message;
+
+        if (fieldName === 'unitKerjaPegawai') {
+          setUnitKerjaError(errorMessage);
+        } else if (fieldName === 'keterangan') {
+          setKeteranganError(errorMessage);
+        }
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSimpanClickk = async () => {
+    try {
+      if (validateForm()) {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        // create data
+        const response = await axios.post("http://localhost:3001/unitKerja",
+          {
+            UnitKerja: unitKerjaPegawai,
+            Keterangan: keterangan,
+            Token: userToken,
+          },
+          {
+            headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },
+
+        );
+
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil menambahkan unit kerja!',
+            confirmButtonColor: '#198754'
+          });
+          window.location.href = 'http://localhost:3000/dataUnitKerja';
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal menambahkan unit kerja!',
+            confirmButtonColor: '#198754'
+          });
+          console.error('Gagal menambahkan unit kerja!');
+        }
+      }
+
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: error.response.data.message,
+        confirmButtonColor: '#198754'
+      });
+      console.error(error.response.data.message);
+    }
   };
 
   return (
@@ -61,12 +138,13 @@ const FormDataUnitKerja = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${unitKerjaError && 'is-invalid'}`}
                       id="unitKerjaPegawai"
                       placeholder="Unit Kerja Pegawai"
                       value={unitKerjaPegawai}
                       onChange={handleChangeUnitKerjaPegawai}
                     />
+                    {unitKerjaError && <div className="invalid-feedback">{unitKerjaError}</div>}
                   </div>
                 </div>
               </div>
@@ -74,27 +152,23 @@ const FormDataUnitKerja = () => {
               <div className='col-lg-12'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
-                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='Tambahan...'></textarea>
+                  <textarea
+                    className={`form-control form-control-sm ${keteranganError && 'is-invalid'}`}
+                    id="keterangan"
+                    rows="3"
+                    value={keterangan}
+                    onChange={handleChangeKeterangan}
+                    placeholder='Tambahan...'>
+                  </textarea>
+                  {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
               </div>
 
-              {/* alert jika belum terisi semua */}
-              <div className='col-lg-6'>
-                {/* <p style={{ display: "none" }}>Nomor terakhir untuk kode surat {kodeSurat} : {lastNumber}</p> */}
-              </div>
-              <div className='col-lg-6'>
-                {/* <div className='mb-3'>
-                  {
-                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input sebelum mengajukan nomor surat!</p>
-                  }
-                </div> */}
-              </div>
-
-              {/* baris kelima */}
+              {/* baris ketiga */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
                   <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>
-                  <Link to="/dashboard"><button type="button" className="btn btn-secondary">Batal</button></Link>
+                  <Link to="/dataUnitKerja"><button type="button" className="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
 

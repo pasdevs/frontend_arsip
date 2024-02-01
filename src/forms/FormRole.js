@@ -47,7 +47,7 @@ const FormRole = () => {
         'string.pattern.base': 'Role tidak boleh mengandung spasi dan hanya boleh menggunakan underscore.',
         'string.pattern.invert.base': 'Input tidak valid',
         'string.min': 'Role harus memiliki panjang setidaknya {#limit} karakter.',
-        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+        'string.max': 'Role harus memiliki panjang maksimal {#limit} karakter.',
       }),
       keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
         'string.empty': 'Keterangan harus diisi.',
@@ -122,7 +122,6 @@ const FormRole = () => {
       });
       console.error(error.response.data.message);
     }
-
   };
 
   return (

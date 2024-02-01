@@ -1,160 +1,299 @@
-import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
-// import Swal from 'sweetalert2';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons"
 import { Link } from 'react-router-dom';
+import Joi from 'joi';
+import 'select2/dist/css/select2.min.css';
+import 'select2/dist/js/select2.full.js';
+import $ from 'jquery';
 
 const FormDataPegawai = () => {
+
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [nipy, setNipy] = useState("");
+  const [nipyError, setNipyError] = useState("");
   const [namaPegawai, setNamaPegawai] = useState("");
+  const [namaPegawaiError, setNamaPegawaiError] = useState("");
   const [jabatanPegawai, setJabatanPegawai] = useState("");
+  const [jabatanPegawaiError, setJabatanPegawaiError] = useState("");
   const [unitKerjaPegawai, setUnitKerjaPegawai] = useState("");
+  const [unitKerjaPegawaiError, setUnitKerjaPegawaiError] = useState("");
   const [lokasiKerjaPegawai, setLokasiKerjaPegawai] = useState("");
+  const [lokasiKerjaPegawaiError, setLokasiKerjaPegawaiError] = useState("");
   const [noTeleponPegawai, setNoTeleponPegawai] = useState("");
+  const [noTeleponPegawaiError, setNoTeleponPegawaiError] = useState("");
   const [emailPegawai, setEmailPegawai] = useState("");
+  const [emailPegawaiError, setEmailPegawaiError] = useState("");
   const [keterangan, setKeterangan] = useState("");
+  const [keteranganError, setKeteranganError] = useState("");
 
-  // const [isFormValid, setIsFormValid] = useState(true);
+  const [listJabatan, setListJabatan] = useState([]);
+  const [listUnitKerja, setListUnitKerja] = useState([]);
+  const [listLokasiKerja, setListLokasiKerja] = useState([]);
 
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa"));
+    // console.log("userToken:", userToken)
+  }, [userToken]);
 
   const handleChangeNipy = (event) => {
     setNipy(event.target.value);
-    console.log(event.target.value)
+    setNipyError("");
   };
 
   const handleChangeNamaPegawai = (event) => {
     setNamaPegawai(event.target.value);
-    console.log(event.target.value)
+    setNamaPegawaiError("");
   };
 
-  const handleChangeJabatanPegawai = (event) => {
-    setJabatanPegawai(event.target.value);
-    console.log(event.target.value)
-  };
+  const handleChangeJabatanPegawai = useCallback((event) => {
+    const selectedValue = event.target.value;
+    console.log("value jabatan:", selectedValue);
+    setJabatanPegawai(selectedValue);
+    setJabatanPegawaiError("");
+  }, []);
 
-  const handleChangeUnitkerjaPegawai = (event) => {
-    setUnitKerjaPegawai(event.target.value);
-    console.log(event.target.value)
-  };
+  const handleChangeUnitkerjaPegawai = useCallback((event) => {
+    const selectedValue = event.target.value;
+    console.log("value unit kerja:", selectedValue);
+    setUnitKerjaPegawai(selectedValue);
+    setUnitKerjaPegawaiError("");
+  }, []);
 
-  const handleChangeLokasiKerjaPegawai = (event) => {
-    setLokasiKerjaPegawai(event.target.value);
-    console.log(event.target.value)
-  };
+  const handleChangeLokasiKerjaPegawai = useCallback((event) => {
+    const selectedValue = event.target.value;
+    console.log("value lokasi kerja:", selectedValue);
+    setLokasiKerjaPegawai(selectedValue);
+    setLokasiKerjaPegawaiError("");
+  }, []);
 
   const handleChangeNoTeleponPegawai = (event) => {
     setNoTeleponPegawai(event.target.value);
-    console.log(event.target.value)
+    setNoTeleponPegawaiError("");
   };
 
   const handleChangeEmailPegawai = (event) => {
     setEmailPegawai(event.target.value);
-    console.log(event.target.value)
+    setEmailPegawaiError("");
   };
 
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
-    console.log(event.target.value)
+    setKeteranganError("");
   };
 
-  // useEffect untuk memantau perubahan pada state
   useEffect(() => {
+    $('#jabatanPegawai').select2();
+    $('#jabatanPegawai').on('change', handleChangeJabatanPegawai);
+    $('#unitKerjaPegawai').select2();
+    $('#unitKerjaPegawai').on('change', handleChangeUnitkerjaPegawai);
+    $('#lokasiKerjaPegawai').select2();
+    $('#lokasiKerjaPegawai').on('change', handleChangeLokasiKerjaPegawai);
+
+    // Membersihkan event handler saat komponen di-unmount
+    return () => {
+      $('#jabatanPegawai').off('change', handleChangeJabatanPegawai);
+      $('#unitKerjaPegawai').off('change', handleChangeUnitkerjaPegawai);
+      $('#lokasiKerjaPegawai').off('change', handleChangeLokasiKerjaPegawai);
+    };
+  }, [handleChangeJabatanPegawai, handleChangeUnitkerjaPegawai, handleChangeLokasiKerjaPegawai]);
+
+  useEffect(() => {
+    const fetchJabatanData = async () => {
+      try {
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        const response = await axios.get('http://localhost:3001/jabatan', {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true,
+          params: {
+            userToken: userToken
+          }
+        });
+        // console.log("response get jabatan:", response.data.data);
+        setListJabatan(response.data.data);
 
 
-    // cek log data
-    console.log("NIPY:", nipy)
-    console.log("Nama Pegawai:", namaPegawai)
-    console.log("Jabatan Pegawai:", jabatanPegawai)
-    console.log("Unit Kerja Pegawai:", unitKerjaPegawai)
-    console.log("Lokasi Kerja Pegawai:", lokasiKerjaPegawai)
-    console.log("Nomor Telepon Pegawai:", noTeleponPegawai)
-    console.log("Email Pegawai:", emailPegawai)
-    console.log("Keterangan:", keterangan)
+      } catch (error) {
+        console.error("Error fetching jabatan:", error);
+      }
+    };
 
-  }, [nipy, namaPegawai, jabatanPegawai, unitKerjaPegawai, lokasiKerjaPegawai, noTeleponPegawai, emailPegawai, keterangan]);
+    const fetchUnitKerjaData = async () => {
+      try {
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        const response = await axios.get('http://localhost:3001/unitkerja', {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true,
+          params: {
+            userToken: userToken
+          }
+        });
+        setListUnitKerja(response.data.data);
 
 
-  // const handleAjukanClick = async () => {
-  //   try {
-  //     // Validasi inputan
-  //     if (!tanggalSurat || !kodeDireksi || !perihal || !kodeSurat || !unitKerja || !yangMenandatangani || !author || !noWhatsappAuthor || !emailAuthor || !selectedFile) {
-  //       setIsFormValid(false);
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Silakan isi semua input sebelum mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       return;
-  //     }
+      } catch (error) {
+        console.error("Error fetching unit kerja:", error);
+      }
+    };
 
-  //     // Jika form valid, lanjutkan penyimpanan
-  //     setIsFormValid(true);
+    const fetchLokasiKerjaData = async () => {
+      try {
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
 
-  //     // Buat objek FormData
-  //     const formData = new FormData();
+        const response = await axios.get('http://localhost:3001/lokasiKerja', {
+          headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+          withCredentials: true,
+          params: {
+            userToken: userToken
+          }
+        });
+        setListLokasiKerja(response.data.data);
 
-  //     formData.append('ID', `${currentYear}_${kodeSurat}_${newNumber}`);
-  //     formData.append('NOMOR_SURAT', newNumber);
-  //     formData.append('YANG_MENANDATANGANI', yangMenandatangani);
-  //     formData.append('YANG_MENANDATANGANI_KODE', kodeDireksi);
-  //     formData.append('KODE_SURAT', kodeSurat);
-  //     formData.append('BULAN', monthToText(new Date().getMonth() + 1));
-  //     formData.append('BULAN_ROMAWI', currentMonth);
-  //     formData.append('TAHUN', currentYear);
-  //     formData.append('PERIHAL', perihal);
-  //     formData.append('UNIT_KERJA', unitKerja);
-  //     formData.append('STATUS', 'Reservasi');
-  //     formData.append('NOMOR_SURAT_LENGKAP', `${newNumber}/${kodeDireksi}/${kodeSurat}/${currentMonth}/${currentYear}`);
-  //     formData.append('file', selectedFile.file, selectedFile.originalFileName);
-  //     formData.append('TANGGAL_PENGAJUAN', tanggalSurat);
-  //     formData.append('YANG_MEMBUBUHKAN_TTD', yangMenandatangani);
-  //     formData.append('AUTHOR', author);
-  //     formData.append('NOMOR_WA_AUTHOR', noWhatsappAuthor);
-  //     formData.append('EMAIL_AUTHOR', emailAuthor);
-  //     formData.append('KETERANGAN', keterangan);
-  //     formData.append('SERAHKAN_DOKUMEN', 'Belum');
 
-  //     // Kirim data ke backend
-  //     const response = await axios.post('http://localhost:3001/addData', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data', // Penting untuk mengatur tipe konten menjadi form-data
-  //       },
-  //     });
+      } catch (error) {
+        console.error("Error fetching lokasi kerja:", error);
+      }
+    };
 
-  //     const { success, message } = response.data;
+    fetchJabatanData();
+    fetchUnitKerjaData();
+    fetchLokasiKerjaData();
+  }, [userToken]);
 
-  //     if (success) {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Berhasil mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.log(message);
-  //       // Reset nilai state atau lakukan operasi lainnya setelah berhasil menyimpan nomor surat
-  //     } else {
-  //       Swal.fire({
-  //         icon: 'error',
-  //         title: 'Gagal mengajukan nomor surat!',
-  //         confirmButtonColor: '#198754'
-  //       });
-  //       console.error('Gagal mengajukan nomor surat!');
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Terjadi kesalahan saat mengajukan nomor surat!',
-  //       confirmButtonColor: '#198754'
-  //     });
-  //     console.error('Terjadi kesalahan saat mengajukan nomor surat!', error);
-  //   }
-  // };
+  const validateForm = () => {
+    const sqlInjectionPattern = /(\b(?:SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|AND|OR|UNION|JOIN|INNER JOIN|OUTER JOIN|LEFT JOIN|RIGHT JOIN|`|%27%27|%22%22)\b)|('|"|--|#|\/\*|\*\/|\\\*|\\\/)/i;
 
-  const handleSimpanClickk = (event) => {
-    alert("Button Simpan Clicked");
+    const schema = Joi.object({
+      nipy: Joi.string().min(20).max(20).pattern(/^\d{2}\.\d{6}\.\d{4}\.\d{1,2}\.\d{3}$/).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'NIPY harus diisi.',
+        'string.pattern.base': 'NIPY harus memiliki format yang valid.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'NIPY harus memiliki panjang {#limit} karakter.',
+        'string.max': 'NIPY harus memiliki panjang {#limit} karakter.',
+      }),
+      namaPegawai: Joi.string().min(1).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Nama Pegawai harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Nama Pegawai harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Nama Pegawai harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+      jabatanPegawai: Joi.string().required().messages({
+        'string.empty': 'Jabatan Pegawai harus diisi.',
+      }),
+      unitKerjaPegawai: Joi.string().required().messages({
+        'string.empty': 'Unit Kerja Pegawai harus diisi.',
+      }),
+      lokasiKerjaPegawai: Joi.string().required().messages({
+        'string.empty': 'Lokasi Kerja Pegawai harus diisi.',
+      }),
+      noTeleponPegawai: Joi.string().required().messages({
+        'string.empty': 'Nomor Telepon Pegawai harus diisi.',
+      }),
+      emailPegawai: Joi.string().email({ tlds: { allow: false } }).required().messages({
+        'string.empty': 'Alamat Email Pegawai harus diisi.',
+        'string.email': 'Format Email Pegawai tidak valid.',
+      }),
+      keterangan: Joi.string().min(3).max(100).pattern(sqlInjectionPattern, { invert: true }).required().messages({
+        'string.empty': 'Keterangan harus diisi.',
+        'string.pattern.invert.base': 'Input tidak valid',
+        'string.min': 'Keterangan harus memiliki panjang setidaknya {#limit} karakter.',
+        'string.max': 'Keterangan harus memiliki panjang maksimal {#limit} karakter.',
+      }),
+    });
+
+    const { error } = schema.validate({ nipy, namaPegawai, jabatanPegawai, unitKerjaPegawai, lokasiKerjaPegawai, noTeleponPegawai, emailPegawai, keterangan }, { abortEarly: false });
+
+    if (error) {
+      error.details.forEach((err) => {
+        const fieldName = err.path[0];
+        const errorMessage = err.message;
+
+        if (fieldName === 'nipy') {
+          setNipyError(errorMessage);
+        } else if (fieldName === 'namaPegawai') {
+          setNamaPegawaiError(errorMessage);
+        } else if (fieldName === 'jabatanPegawai') {
+          setJabatanPegawaiError(errorMessage);
+        } else if (fieldName === 'unitKerjaPegawai') {
+          setUnitKerjaPegawaiError(errorMessage);
+        } else if (fieldName === 'lokasiKerjaPegawai') {
+          setLokasiKerjaPegawaiError(errorMessage);
+        } else if (fieldName === 'noTeleponPegawai') {
+          setNoTeleponPegawaiError(errorMessage);
+        } else if (fieldName === 'emailPegawai') {
+          setEmailPegawaiError(errorMessage);
+        } else if (fieldName === 'keterangan') {
+          setKeteranganError(errorMessage);
+        }
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSimpanClickk = async (event) => {
+    try {
+      if (validateForm()) {
+        // Mengambil CSRF token
+        const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
+        const resultCsrf = getCsrf.data.csrfToken;
+
+        // create data
+        const response = await axios.post("http://localhost:3001/pegawai",
+          {
+            NIPY: nipy,
+            NamaPegawai: namaPegawai,
+            JabatanID: jabatanPegawai,
+            UnitKerjaID: unitKerjaPegawai,
+            LokasiKerjaID: lokasiKerjaPegawai,
+            NoTelepon: noTeleponPegawai,
+            Email: emailPegawai,
+            Keterangan: keterangan,
+            Token: userToken,
+          },
+          {
+            headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
+            withCredentials: true,
+          },
+
+        );
+
+        if (response) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil menambahkan pegawai!',
+            confirmButtonColor: '#198754'
+          });
+          window.location.href = 'http://localhost:3000/pegawai';
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal menambahkan pegawai!',
+            confirmButtonColor: '#198754'
+          });
+          console.error('Gagal menambahkan pegawai!');
+        }
+      }
+
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: error.response.data.message,
+        confirmButtonColor: '#198754'
+      });
+      console.error(error.response.data.message);
+    }
   };
 
 
@@ -182,12 +321,13 @@ const FormDataPegawai = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${nipyError && 'is-invalid'}`}
                       id="nipy"
                       placeholder="Nomor Induk Pegawai Yayasan"
                       value={nipy}
                       onChange={handleChangeNipy}
                     />
+                    {nipyError && <div className="invalid-feedback">{nipyError}</div>}
                   </div>
                 </div>
               </div>
@@ -197,12 +337,13 @@ const FormDataPegawai = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${namaPegawaiError && 'is-invalid'}`}
                       id="namaPegawai"
                       placeholder="Nama Lengkap Pegawai"
                       value={namaPegawai}
                       onChange={handleChangeNamaPegawai}
                     />
+                    {namaPegawaiError && <div className="invalid-feedback">{namaPegawaiError}</div>}
                   </div>
                 </div>
               </div>
@@ -212,29 +353,38 @@ const FormDataPegawai = () => {
                 <div className="mb-3">
                   <label htmlFor="jabatanPegawai" className="form-label" style={{ fontSize: "small" }}>Jabatan</label>
                   <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
+                    <select
+                      className={`form-select form-select-sm`}
                       id="jabatanPegawai"
-                      placeholder="Jabatan Pegawai"
                       value={jabatanPegawai}
                       onChange={handleChangeJabatanPegawai}
-                    />
+                    >
+                      <option value="">-- Pilih Jabatan --</option>
+                      {listJabatan.map((item) => (
+                        <option key={item.JabatanID} value={item.JabatanID}>{item.Jabatan}</option>
+                      ))}
+                    </select>
+                    {jabatanPegawaiError && <div className="invalid-feedback">{jabatanPegawaiError}</div>}
                   </div>
                 </div>
               </div>
+
               <div className='col-lg-6'>
                 <div className="mb-3">
                   <label htmlFor="unitKerjaPegawai" className="form-label" style={{ fontSize: "small" }}>Unit Kerja</label>
                   <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
+                    <select
+                      className={`form-select form-select-sm ${unitKerjaPegawaiError && 'is-invalid'}`}
                       id="unitKerjaPegawai"
-                      placeholder="Unit kerja Pegawai"
                       value={unitKerjaPegawai}
                       onChange={handleChangeUnitkerjaPegawai}
-                    />
+                    >
+                      <option value="">-- Pilih Unit Kerja --</option>
+                      {listUnitKerja.map((item) => (
+                        <option key={item.UnitKerjaID} value={item.UnitKerjaID}>{item.UnitKerja}</option>
+                      ))}
+                    </select>
+                    {unitKerjaPegawaiError && <div className="invalid-feedback">{unitKerjaPegawaiError}</div>}
                   </div>
                 </div>
               </div>
@@ -244,14 +394,18 @@ const FormDataPegawai = () => {
                 <div className="mb-3">
                   <label htmlFor="lokasiKerjaPegawai" className="form-label" style={{ fontSize: "small" }}>Lokasi Kerja</label>
                   <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
+                    <select
+                      className={`form-select form-select-sm ${lokasiKerjaPegawaiError && 'is-invalid'}`}
                       id="lokasiKerjaPegawai"
-                      placeholder="Lokasi Kerja Pegawai"
                       value={lokasiKerjaPegawai}
                       onChange={handleChangeLokasiKerjaPegawai}
-                    />
+                    >
+                      <option value="">-- Pilih Lokasi Kerja --</option>
+                      {listLokasiKerja.map((item) => (
+                        <option key={item.LokasiKerjaID} value={item.LokasiKerjaID}>{item.LokasiKerja}</option>
+                      ))}
+                    </select>
+                    {lokasiKerjaPegawaiError && <div className="invalid-feedback">{lokasiKerjaPegawaiError}</div>}
                   </div>
                 </div>
               </div>
@@ -261,13 +415,14 @@ const FormDataPegawai = () => {
                   <label htmlFor="noTeleponPegawai" className="form-label" style={{ fontSize: "small" }}>Nomor Telepon Pegawai <FontAwesomeIcon icon={faWhatsapp} style={{ color: "green" }} /></label>
                   <div className="input-group">
                     <input
-                      type="text"
-                      className="form-control form-control-sm"
+                      type="number"
+                      className={`form-control form-control-sm ${noTeleponPegawaiError && 'is-invalid'}`}
                       id="noTeleponPegawai"
                       placeholder="Nomor Whatsapp Aktif"
                       value={noTeleponPegawai}
                       onChange={handleChangeNoTeleponPegawai}
                     />
+                    {noTeleponPegawaiError && <div className="invalid-feedback">{noTeleponPegawaiError}</div>}
                   </div>
                 </div>
               </div>
@@ -278,40 +433,37 @@ const FormDataPegawai = () => {
                   <label htmlFor="emailPegawai" className="form-label" style={{ fontSize: "small" }}>Email Pegawai</label>
                   <div className="input-group">
                     <input
-                      type="text"
-                      className="form-control form-control-sm"
+                      type="email"
+                      className={`form-control form-control-sm ${emailPegawaiError && 'is-invalid'}`}
                       id="emailPegawai"
                       placeholder="Email Aktif Pegawai"
                       value={emailPegawai}
                       onChange={handleChangeEmailPegawai}
                     />
+                    {emailPegawaiError && <div className="invalid-feedback">{emailPegawaiError}</div>}
                   </div>
                 </div>
               </div>
               <div className='col-lg-6'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
-                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='Tambahan...'></textarea>
+                  <textarea
+                    className={`form-control form-control-sm ${keteranganError && 'is-invalid'}`}
+                    id="keterangan"
+                    rows="3"
+                    value={keterangan}
+                    onChange={handleChangeKeterangan}
+                    placeholder='Tambahan...'>
+                  </textarea>
+                  {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
-              </div>
-
-              {/* alert jika belum terisi semua */}
-              <div className='col-lg-6'>
-                {/* <p style={{ display: "none" }}>Nomor terakhir untuk kode surat {kodeSurat} : {lastNumber}</p> */}
-              </div>
-              <div className='col-lg-6'>
-                {/* <div className='mb-3'>
-                  {
-                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input sebelum mengajukan nomor surat!</p>
-                  }
-                </div> */}
               </div>
 
               {/* baris kelima */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
                   <button type="button" className="btn btn-success" onClick={handleSimpanClickk} style={{ marginRight: "20px" }}>Simpan</button>
-                  <Link to="/dashboard"><button type="button" className="btn btn-secondary">Batal</button></Link>
+                  <Link to="/dataPegawai"><button type="button" className="btn btn-secondary">Batal</button></Link>
                 </div>
               </div>
 

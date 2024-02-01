@@ -3,38 +3,35 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 
 const DetailJabatan = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [userToken, setUserToken] = useState(localStorage.getItem("_aa") || "");
   const [jabatan, setJabatan] = useState("");
   const [keterangan, setKeterangan] = useState("");
+  const [jabatanError, setJabatanError] = useState("");
+  const [keteranganError, setKeteranganError] = useState("");
 
-  const [isFormValid, setIsFormValid] = useState(true);
-
+  useEffect(() => {
+    setUserToken(localStorage.getItem("_aa") || "");
+  }, [userToken]);
 
   const handleChangeJabatan = (event) => {
     setJabatan(event.target.value);
-    console.log(event.target.value)
+    if (event.target.value !== "") {
+      setJabatanError("");
+    }
   };
 
   const handleChangeKeterangan = (event) => {
     setKeterangan(event.target.value);
-    console.log(event.target.value)
+    if (event.target.value !== "") {
+      setKeteranganError("");
+    }
   };
-
-  // useEffect untuk memantau perubahan pada state
-  useEffect(() => {
-
-    // cek log data
-    console.log("Jabatan:", jabatan)
-    console.log("Keterangan:", keterangan)
-
-  }, [jabatan, keterangan]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,18 +42,18 @@ const DetailJabatan = () => {
 
         const response = await axios.get(`http://localhost:3001/jabatan/${id}`, {
           headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
-          withCredentials: true
+          withCredentials: true,
+          params: {
+            userToken: userToken
+          }
         });
-        const result = response.data;
-        console.log("result jabatan:", result.Jabatan)
-        console.log("result keterangan:",  result.Keterangan)
 
-        if (result) {
-          setJabatan(result.Jabatan);
-          setKeterangan(result.Keterangan);
+        if (response.data.status) {
+          setJabatan(response.data.message.Jabatan);
+          setKeterangan(response.data.message.Keterangan);
 
         } else {
-          console.error(result.status);
+          console.error(response.data.status);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -64,30 +61,27 @@ const DetailJabatan = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, userToken]);
 
   const handleUpdateClickk = async () => {
     try {
-      if (!jabatan || !keterangan) {
-        setIsFormValid(false);
-        Swal.fire({
-          icon: 'error',
-          title: 'Silakan isi jabatan dan keterangan!',
-          confirmButtonColor: '#198754'
-        });
-        return;
+      if (!jabatan) {
+        setJabatanError("Jabatan harus diisi.");
       }
-      setIsFormValid(true);
+      if (!keterangan) {
+        setKeteranganError("Keterangan harus diisi.")
+      }
 
       // Mengambil CSRF token
       const getCsrf = await axios.get("http://localhost:3001/getCsrf", { withCredentials: true });
       const resultCsrf = getCsrf.data.csrfToken;
 
-      // update jabatan
-      const updateRole = await axios.put(`http://localhost:3001/jabatan/${id}`,
+      // update role
+      const response = await axios.patch(`http://localhost:3001/jabatan/${id}`,
         {
           Jabatan: jabatan,
-          Keterangan: keterangan
+          Keterangan: keterangan,
+          Token: userToken,
         },
         {
           headers: { 'X-CSRF-Token': resultCsrf, 'Content-Type': 'application/json' },
@@ -95,28 +89,27 @@ const DetailJabatan = () => {
         }
       );
 
-      if (updateRole) {
+      if (response) {
         Swal.fire({
           icon: 'success',
           title: 'Berhasil mengupdate jabatan!',
           confirmButtonColor: '#198754'
         });
         navigate('/dataJabatan');
+
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Gagal mengupdate jabatan!',
           confirmButtonColor: '#198754'
         });
-        console.error('Gagal mengupdate jabatan!');
       }
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Terjadi kesalahan saat mengupdate jabatan!',
+        title: error.response.data.message,
         confirmButtonColor: '#198754'
       });
-      console.error('Terjadi kesalahan saat mengupdate jabatan!', error);
     }
   };
 
@@ -144,12 +137,13 @@ const DetailJabatan = () => {
                   <div className="input-group">
                     <input
                       type="text"
-                      className="form-control form-control-sm"
+                      className={`form-control form-control-sm ${jabatanError && 'is-invalid'}`}
                       id="jabatan"
                       placeholder="Jabatan"
                       value={jabatan}
                       onChange={handleChangeJabatan}
                     />
+                    {jabatanError && <div className="invalid-feedback">{jabatanError}</div>}
                   </div>
                 </div>
               </div>
@@ -157,23 +151,19 @@ const DetailJabatan = () => {
               <div className='col-lg-12'>
                 <div className="mb-3">
                   <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
-                  <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='Tambahan...'></textarea>
+                  <textarea
+                    className={`form-control form-control-sm ${keteranganError && 'is-invalid'}`}
+                    id="keterangan"
+                    rows="3"
+                    value={keterangan}
+                    onChange={handleChangeKeterangan}
+                    placeholder='Tambahan...'>
+                  </textarea>
+                  {keteranganError && <div className="invalid-feedback">{keteranganError}</div>}
                 </div>
               </div>
 
-              {/* alert jika belum terisi semua */}
-              <div className='col-lg-6'>
-
-              </div>
-              <div className='col-lg-6'>
-                <div className='mb-3'>
-                  {
-                    !isFormValid && <p style={{ color: 'red' }}>Silakan isi semua input!</p>
-                  }
-                </div>
-              </div>
-
-              {/* baris kelima */}
+              {/* baris ketiga */}
               <div className='col-lg-12' style={{ textAlign: "right" }}>
                 <div className="mb-3">
                   <button type="button" className="btn btn-success" onClick={handleUpdateClickk} style={{ marginRight: "20px" }}>Update</button>
