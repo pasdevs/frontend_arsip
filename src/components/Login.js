@@ -78,6 +78,7 @@ const Login = () => {
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
+      event.preventDefault();
       handleLogin();
     }
   };
@@ -107,23 +108,23 @@ const Login = () => {
               <h4 className="card-title" style={{ color: "#3F6260", marginBottom: "0px" }}>AMS Unpas 2023</h4>
               <p style={{ fontSize: "11px", color: "darkgray", fontWeight: 'bold' }}>Enter your username and password to sign in</p>
               <div className="mb-3">
-                <label htmlFor="InputUsername" className="form-label" style={{ fontSize: "12px" }}><b>Username</b></label>
-                <input type="text" className="form-control" id="InputUsername" placeholder="Your Username" value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={handleKeyPress} style={{ borderRadius: "10px", fontSize: "12px" }} />
+                <label htmlFor="InputUsername" className="form-label" style={{ fontSize: "16px" }}><b>Username</b></label>
+                <input type="text" className="form-control" id="InputUsername" placeholder="Your Username" value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={handleKeyPress} style={{ borderRadius: "10px", fontSize: "16px" }} />
               </div>
               <div className="mb-3">
-                <label htmlFor="InputPassword" className="form-label" style={{ fontSize: "12px" }}><b>Password</b></label>
-                <input type="password" className="form-control" id="InputPassword" placeholder="Your Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyPress} style={{ borderRadius: "10px", fontSize: "12px" }} />
+                <label htmlFor="InputPassword" className="form-label" style={{ fontSize: "16px" }}><b>Password</b></label>
+                <input type="password" className="form-control" id="InputPassword" placeholder="Your Password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyPress} style={{ borderRadius: "10px", fontSize: "16px" }} />
               </div>
               <div className="mb-3 form-check form-switch custom-switch">
                 <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" style={{ cursor: "pointer" }} />
-                <label className="form-check-label" htmlFor="flexSwitchCheckDefault" style={{ fontSize: "12px" }}><b>Remember me</b></label>
+                <label className="form-check-label" htmlFor="flexSwitchCheckDefault" style={{ fontSize: "16px" }}><b>Remember me</b></label>
               </div>
               <div className='mb-3'>
                 {
                   !isFormValid && <p style={{ color: 'red' }}>Silakan isi username dan password terlebih dahulu!</p>
                 }
               </div>
-              <button type="button" className="btn btn-primary btn-block" onClick={handleLogin} style={{ backgroundColor: "#3F6260", border: "inherit", width: "100%", borderRadius: "10px", fontSize: "12px" }}>
+              <button type="button" className="btn btn-primary btn-block" onClick={handleLogin} style={{ backgroundColor: "#3F6260", border: "inherit", width: "100%", borderRadius: "10px", fontSize: "16px" }}>
                 <b>SIGN IN</b>
               </button>
             </div>
