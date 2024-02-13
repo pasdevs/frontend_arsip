@@ -8,6 +8,7 @@ import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAngle
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+import Footer from '../components/Footer';
 
 const TableDataPegawai = () => {
 
@@ -35,7 +36,7 @@ const TableDataPegawai = () => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
-  
+
   const fetchData = useCallback(async () => {
     if (userToken !== "") {
       try {
@@ -66,7 +67,7 @@ const TableDataPegawai = () => {
         setLoading(false);
         if (error.response.status === 400) {
           console.log("message:", error.response.data.message);
-          window.location.href = 'http://localhost:3000/login';
+          // window.location.href = 'http://localhost:3000/login';
         } else {
           console.error('Error fetching data:', error);
         }
@@ -74,7 +75,7 @@ const TableDataPegawai = () => {
     } else {
       setLoading(false);
       console.log('No credentials provided, please try again ^_^');
-      window.location.href = 'http://localhost:3000/login';
+      // window.location.href = 'http://localhost:3000/login';
     }
 
   }, [currentPage, itemsPerPage, debouncedSearchTerm, userToken]);
@@ -167,8 +168,8 @@ const TableDataPegawai = () => {
       <Sidebar />
 
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+      <div className='col-lg-10 col-md-10 d-flex flex-column'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -299,6 +300,10 @@ const TableDataPegawai = () => {
             </div>
           </div>
 
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
 
         </div>
       </div>

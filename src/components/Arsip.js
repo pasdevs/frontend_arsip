@@ -8,6 +8,7 @@ import { faTrashCan, faLayerGroup, faArrowsRotate, faMinus, faAngleLeft, faAngle
 // import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+import Footer from './Footer';
 
 const Arsip = () => {
 
@@ -155,14 +156,14 @@ const Arsip = () => {
   const handleRefreshData = () => {
     fetchData()
   }
-  
+
   return (
     <div className='row' style={{ marginLeft: "10px", marginRight: "10px", minHeight: "100vh", position: "relative" }}>
       <Sidebar />
 
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+      <div className='col-lg-10 col-md-10 d-flex flex-column'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -317,6 +318,11 @@ const Arsip = () => {
             </div>
           </div>
 
+
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
 
         </div>
       </div>

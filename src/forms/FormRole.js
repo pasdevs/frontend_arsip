@@ -8,6 +8,7 @@ import Joi from 'joi';
 import 'select2/dist/css/select2.min.css';
 import 'select2/dist/js/select2.full.js';
 import $ from 'jquery';
+import Footer from '../components/Footer';
 
 const FormRole = () => {
 
@@ -130,7 +131,7 @@ const FormRole = () => {
 
       {/* KONTEN */}
       <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -198,9 +199,14 @@ const FormRole = () => {
             </div>
 
           </div>
+
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
+
         </div>
       </div>
-
     </div>
   )
 }

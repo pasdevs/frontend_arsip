@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import Footer from './Footer';
 
 const PengajuanNomorSuratBaru = () => {
   const [tanggalSurat, setTanggalSurat] = useState("");
@@ -270,13 +271,13 @@ const PengajuanNomorSuratBaru = () => {
       <Sidebar />
 
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+      <div className='col-lg-10 col-md-10 d-flex flex-column'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item active" aria-current="page"><b style={{color: "black"}}>Pengajuan Nomor Surat Baru</b></li>
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Pengajuan Nomor Surat Baru</b></li>
                 </ol>
               </nav>
             </div>
@@ -285,7 +286,7 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris pertama */}
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="tanggalSurat" className="form-label" style={{fontSize: "small"}}>Tanggal Surat</label>
+                  <label htmlFor="tanggalSurat" className="form-label" style={{ fontSize: "small" }}>Tanggal Surat</label>
                   <div className="input-group">
                     <input
                       type="date"
@@ -300,7 +301,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="author" className="form-label" style={{fontSize: "small"}}>Penanggung Jawab</label>
+                  <label htmlFor="author" className="form-label" style={{ fontSize: "small" }}>Penanggung Jawab</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -317,7 +318,7 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris kedua */}
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="perihal" className="form-label" style={{fontSize: "small"}}>Perihal</label>
+                  <label htmlFor="perihal" className="form-label" style={{ fontSize: "small" }}>Perihal</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -332,7 +333,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="nomorWhatsappAuthor" className="form-label" style={{fontSize: "small"}}>Kontak</label>
+                  <label htmlFor="nomorWhatsappAuthor" className="form-label" style={{ fontSize: "small" }}>Kontak</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -349,7 +350,7 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris ketiga */}
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="kodeDireksi" className="form-label" style={{fontSize: "small"}}>Direksi Penanggung Jawab</label>
+                  <label htmlFor="kodeDireksi" className="form-label" style={{ fontSize: "small" }}>Direksi Penanggung Jawab</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       id='kodeDireksi'
@@ -372,7 +373,7 @@ const PengajuanNomorSuratBaru = () => {
 
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="emailAuthor" className="form-label" style={{fontSize: "small"}}>Email</label>
+                  <label htmlFor="emailAuthor" className="form-label" style={{ fontSize: "small" }}>Email</label>
                   <div className="input-group">
                     <input
                       type="email"
@@ -389,7 +390,7 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris keempat */}
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="kodeSurat" className="form-label" style={{fontSize: "small"}}>Kode Surat</label>
+                  <label htmlFor="kodeSurat" className="form-label" style={{ fontSize: "small" }}>Kode Surat</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       id='kodeSurat'
@@ -414,7 +415,7 @@ const PengajuanNomorSuratBaru = () => {
               </div>
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="unitKerja" className="form-label" style={{fontSize: "small"}}>Unit Kerja</label>
+                  <label htmlFor="unitKerja" className="form-label" style={{ fontSize: "small" }}>Unit Kerja</label>
                   <div className="input-group d-flex align-items-center">
                     <select
                       id='unitKerja'
@@ -437,7 +438,7 @@ const PengajuanNomorSuratBaru = () => {
               {/* baris kelima */}
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="namaYangMenandatangani" className="form-label" style={{fontSize: "small"}}>Tanda Tangan</label>
+                  <label htmlFor="namaYangMenandatangani" className="form-label" style={{ fontSize: "small" }}>Tanda Tangan</label>
                   <div className="input-group">
                     <input
                       type="text"
@@ -485,7 +486,7 @@ const PengajuanNomorSuratBaru = () => {
 
               <div className='col-lg-6'>
                 <div className="mb-3">
-                  <label htmlFor="keterangan" className="form-label" style={{fontSize: "small"}}>Keterangan:</label>
+                  <label htmlFor="keterangan" className="form-label" style={{ fontSize: "small" }}>Keterangan:</label>
                   <textarea className="form-control form-control-sm" id="keterangan" rows="3" value={keterangan} onChange={handleChangeKeterangan} placeholder='(opsional)'></textarea>
                 </div>
               </div>
@@ -534,9 +535,14 @@ const PengajuanNomorSuratBaru = () => {
             </div>
 
           </div>
+
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
+
         </div>
       </div>
-
     </div>
   )
 }

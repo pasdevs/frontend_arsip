@@ -70,7 +70,7 @@ const DashboardArsipKeluar = () => {
 
 
   return (
-    <div className='container' style={{position: "relative", minHeight: "95vh"}}>
+    <div className='d-flex flex-column' style={{position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px"}}>
       <div className='row'>
         <div className='col-lg-12'>
           <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -272,7 +272,8 @@ const DashboardArsipKeluar = () => {
         </div>
       </div>
 
-      <div className='row footer' style={{marginTop: "10px", marginBottom: "10px"}}>
+      <div className='flex-grow-1'></div>
+      <div className='row' style={{marginTop: "10px", marginBottom: "10px"}}>
         <Footer />
       </div>
 

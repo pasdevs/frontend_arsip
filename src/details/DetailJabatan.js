@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import "../App.css"
 import Sidebar from '../components/Sidebar';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 const DetailJabatan = () => {
   const { id } = useParams();
@@ -118,13 +119,13 @@ const DetailJabatan = () => {
       <Sidebar />
 
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+      <div className='col-lg-10 col-md-10 d-flex flex-column'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <ol className="breadcrumb">
-                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Detail Role</b></li>
+                  <li className="breadcrumb-item active" aria-current="page"><b style={{ color: "black" }}>Detail Jabatan</b></li>
                 </ol>
               </nav>
             </div>
@@ -174,9 +175,14 @@ const DetailJabatan = () => {
             </div>
 
           </div>
+
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
+
         </div>
       </div>
-
     </div>
   )
 }

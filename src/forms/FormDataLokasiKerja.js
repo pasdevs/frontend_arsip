@@ -5,6 +5,7 @@ import "../App.css"
 import Sidebar from '../components/Sidebar';
 import { Link } from 'react-router-dom';
 import Joi from 'joi';
+import Footer from '../components/Footer';
 
 const FormDataLokasiKerja = () => {
 
@@ -119,8 +120,8 @@ const FormDataLokasiKerja = () => {
       <Sidebar />
 
       {/* KONTEN */}
-      <div className='col-lg-10 col-md-10 d-flex flex-column' style={{ marginTop: "10px" }}>
-        <div className='container'>
+      <div className='col-lg-10 col-md-10 d-flex flex-column'>
+        <div className='d-flex flex-column' style={{ position: "relative", minHeight: "100vh", marginLeft: "20px", marginRight: "20px", paddingTop: "20px" }}>
           <div className='row'>
             <div className='col-lg-12' style={{ backgroundColor: "white", borderRadius: "5px", marginRight: "15px" }}>
               <nav aria-label="breadcrumb" style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -175,9 +176,14 @@ const FormDataLokasiKerja = () => {
             </div>
 
           </div>
+
+          <div className='flex-grow-1'></div>
+          <div className='row' style={{ marginTop: "10px", marginBottom: "10px" }}>
+            <Footer />
+          </div>
+
         </div>
       </div>
-
     </div>
   )
 }
